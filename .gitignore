@@ -7,3 +7,5 @@ shtrgame/shtrgame.sln*
 # these files are tracked separately by git lfs
 shtrgame/Build/*
 shtrgame/Content/*
+blender_files/*
+downloaded_models/*
