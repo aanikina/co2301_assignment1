@@ -9,3 +9,6 @@ shtrgame/shtrgame.sln*
 #shtrgame/Content/*
 #blender_files/*
 #downloaded_models/*
+# uesless files
+*.blend1
+*.log
