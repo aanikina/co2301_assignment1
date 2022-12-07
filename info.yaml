@@ -1,0 +1,54 @@
+---
+3d models:
+  disco_cube.fbx:
+    date: 2022.12.01
+    source: self-made
+    status: useless, untracked
+  utah_teapot.fbx:
+    date: 2022.12.01
+    source: CO2301 Blackboard
+    status: part of walking_teapot, saved to lfs once
+  leg.max:
+    date: 2022.12.01
+    source: https://open3dmodel.com/3d-models/3d-model-female-mannequin-leg_193305.html
+    status: useless, saved to lfs once
+  leg.obj:
+    date: 2022.12.01
+    source: converted from leg.max via https://anyconv.com/max-to-obj-converter/
+    status: part of walking_teapot, saved to lfs once
+  walking_teapot.fbx:
+    date: 2022.12.07
+    source: self-made from downloaded parts
+    status: saved to lfs once, will use in unreal
+blender files:
+  disco_cube.blend:
+    date: 2022.12.01
+    source: self-made
+    status: useless, untracked
+    desc: first attempt to follow rigging tutorial
+  scary_cube.blend
+    date: 2022.12.01
+    source: self-made
+    status: useless, untracked
+    desc: first attempt to follow rigging tutorial
+  walking_teapot.blend
+    date: 2022.12.01
+    source: self-made
+    status: wip
+    desc: future pawn, model ok, armature ok, animations no
+--- # assignment constraints and their practical use
+third person POV: first person POV is unconvenient / 3rd person POV provides smth worthy to look at
+shooter: everyone has some sort of gun and can shoot each other
+--- # research / todo
+python scripting in unreal: # useless - can not run while playing, only while developing/editing
+  - https://docs.unrealengine.com/4.27/en-US/ProductionPipelines/ScriptingAndAutomation/Python/
+  - https://docs.unrealengine.com/4.27/en-US/PythonAPI/
+lua scripting in unreal:
+  - https://www.unrealengine.com/marketplace/en-US/product/luamachine
+  - https://github.com/Tencent/sluaunreal
+  - https://www.reddit.com/r/unrealengine/comments/ooesak/unreal_engine_lua_unlua/
+  - https://forums.unrealengine.com/t/a-new-community-hosted-unreal-engine-wiki/141494
+  - https://forums.unrealengine.com/t/lua-script-plugin/70099
+  - https://forums.unrealengine.com/t/official-lua-support/385967
+  - https://eliasdaler.wordpress.com/2013/10/11/lua_cpp_binder/
+...
