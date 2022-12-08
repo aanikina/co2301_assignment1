@@ -6,7 +6,7 @@
 AWalkableWall::AWalkableWall()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// reused code from CO2301 lab4
 	
@@ -38,12 +38,13 @@ void AWalkableWall::BeginPlay()
 
 }
 
+/*
 // Called every frame
 void AWalkableWall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
+}*/
 
 void AWalkableWall::OnCollisionBoxOverlapBegin(
 	UPrimitiveComponent *OverlappedComp,
