@@ -4,20 +4,23 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "WalkingTeapot.h"
+// order is important
+#include "CustomMovementActorComponent.h"
 
 // Sets default values
 AWalkingTeapot::AWalkingTeapot()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false; // from lab8
 
-	// reused code from CO2301 lab2
+	// reused code from CO2301 lab2, lab8
 	
 	// initialize components
 	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>( TEXT("SkeletalMeshComponent") );
 	CameraComp = CreateDefaultSubobject<UCameraComponent>( TEXT("CameraComponent") );
 	CameraSpringArmComp = CreateDefaultSubobject<USpringArmComponent>( TEXT("CameraSpringArmComponent") );
 	ProjectileSpawnPointSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("ProjectileSpawnPointComponent") );
+	CustomMovementActorComp = CreateDefaultSubobject<UCustomMovementActorComponent>( TEXT("CustomMovementActorComponent") );
 	
 	// build component hierarchy
 
@@ -33,53 +36,3 @@ AWalkingTeapot::AWalkingTeapot()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 }
-
-// Called when the game starts or when spawned
-void AWalkingTeapot::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AWalkingTeapot::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AWalkingTeapot::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// reused code from CO2301 lab2
-
-	PlayerInputComponent->BindAxis( "Drive", this, &AWalkingTeapot::MoveByAmount );
-	PlayerInputComponent->BindAxis( "Turn", this, &AWalkingTeapot::RotateByAmount );
-
-}
-
-void AWalkingTeapot::MoveByAmount( float Value ) {
-
-	// reused code from CO2301 lab2
-
-	DeltaLocation = FVector( Value*MoveSpeed*GetWorld()->DeltaTimeSeconds, 0.0f, 0.0f );
-	AddActorLocalOffset( DeltaLocation, true );
-
-}
-
-void AWalkingTeapot::RotateByAmount( float Value ) {
-
-	// reused code from CO2301 lab2
-
-	// calc rotation in proper units
-	float RotateAmount = Value*RotationSpeed * GetWorld()->DeltaTimeSeconds;
-	FRotator Rotation = FRotator( 0.0f, RotateAmount, 0.0f );
-	DeltaRotation = FQuat( Rotation );
-
-	// apply
-	AddActorLocalRotation( DeltaRotation, true );
-
-}
-

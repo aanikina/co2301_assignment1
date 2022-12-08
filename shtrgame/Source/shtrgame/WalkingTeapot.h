@@ -16,15 +16,13 @@ public:
 	AWalkingTeapot();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	// reused code from CO2301 lab8
+	
+	UPROPERTY( EditAnywhere )
+		class UCustomMovementActorComponent* CustomMovementActorComp;
 	
 private:
 
@@ -32,24 +30,13 @@ private:
 	// help:
 	// https://docs.unrealengine.com/4.27/en-US/Basics/Components/SkeletalMesh/
 
-	UPROPERTY( VisibleAnywhere )
+	UPROPERTY( EditAnywhere )
 		USkeletalMeshComponent* SkeletalMeshComp;
-	UPROPERTY( VisibleAnywhere )
+	UPROPERTY( EditAnywhere )
 		class UCameraComponent* CameraComp;
-	UPROPERTY( VisibleAnywhere )
+	UPROPERTY( EditAnywhere )
 		class USpringArmComponent* CameraSpringArmComp;
 	UPROPERTY( VisibleAnywhere )
 		class USceneComponent* ProjectileSpawnPointSceneComp;
-	UPROPERTY( EditAnywhere )
-		float MoveSpeed = 100.0f;
-	UPROPERTY( EditAnywhere )
-		float RotationSpeed = 100.0f;
-	UFUNCTION()
-		void MoveByAmount( float Value );
-	UFUNCTION()
-		void RotateByAmount( float Value );
-
-	FVector DeltaLocation = FVector( 0.0f,0.0f,0.0f );
-	FQuat DeltaRotation =  FQuat( 0.0f, 0.0f, 0.0f, 0.0f );
 
 };
