@@ -28,6 +28,13 @@ public:
 	virtual void CallDrive( float Value );
 	virtual void CallStrafe( float Value );
 	virtual void CallTurn( float Value );
+	virtual void CallLook( float Value );
+	
+	virtual void CallFireTriggerPull();
+	virtual void CallFireTriggerRelease();
+	
+	virtual void CallDashPress();
+	virtual void CallDashRelease();
 
 	AWalkingTeapot *PawnToBeMoved;
 	
