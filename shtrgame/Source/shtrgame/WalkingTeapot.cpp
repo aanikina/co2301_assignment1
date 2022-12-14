@@ -5,7 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "WalkingTeapot.h"
 // order is important
-#include "CustomMovementActorComponent.h"
+#include "CustomPawnMovementComponent.h"
 
 // Sets default values
 AWalkingTeapot::AWalkingTeapot()
@@ -20,7 +20,7 @@ AWalkingTeapot::AWalkingTeapot()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>( TEXT("CameraComponent") );
 	CameraSpringArmComp = CreateDefaultSubobject<USpringArmComponent>( TEXT("CameraSpringArmComponent") );
 	ProjectileSpawnPointSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("ProjectileSpawnPointComponent") );
-	CustomMovementActorComp = CreateDefaultSubobject<UCustomMovementActorComponent>( TEXT("CustomMovementActorComponent") );
+	CustomPawnMovementComp = CreateDefaultSubobject<UCustomPawnMovementComponent>( TEXT("CustomPawnMovementComponent") );
 	
 	// build component hierarchy
 

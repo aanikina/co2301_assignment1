@@ -20,9 +20,9 @@ protected:
 public:	
 
 	// reused code from CO2301 lab8
-	
+
 	UPROPERTY( EditAnywhere )
-		class UCustomMovementActorComponent* CustomMovementActorComp;
+		class UCustomPawnMovementComponent* CustomPawnMovementComp;
 	
 private:
 
