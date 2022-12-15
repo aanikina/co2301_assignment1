@@ -9,6 +9,11 @@
 void ACustomPlayerController::BeginPlay() {
 
     Super::BeginPlay();
+	
+	// help:
+	// https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982/2
+	// https://cpp.hotexamples.com/examples/-/-/GetHitResultUnderCursorForObjects/cpp-gethitresultundercursorforobjects-function-examples.html
+	//WalkableClasses.Add( AWalkableWall );
 
     PawnToBeMoved = Cast<AWalkingTeapot>( GetPawn() );
 
@@ -70,9 +75,36 @@ void ACustomPlayerController::CallLook( float Value ) {
 }
 
 void ACustomPlayerController::CallFireTriggerPull() {
+
+	// help:
+	// https://docs.unrealengine.com/5.1/en-US/API/Runtime/Engine/GameFramework/APlayerController/GetHitResultUnde-_1/
+	// https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982/2
+
 	// foolcheck
 	if( !PawnToBeMoved ) { return; }
-	PawnToBeMoved->CustomPawnMovementComp->FireTriggerPullEvent();
+
+	/*
+    FHitResult HitResult;
+	bool bHitOccurred;
+
+	UE_LOG( LogTemp, Warning, TEXT("--- before fire") );
+	bHitOccurred = GetHitResultUnderCursorForObjects( WalkableClasses, true, HitResult );
+	if(bHitOccurred) {
+		//utilize Hit.GetActor() to know who was hit 	
+		UE_LOG( LogTemp, Warning, TEXT("hit: %s"), *(HitResult.GetActor()->GetActorLocation()).ToString() );
+	}
+	//*/
+	
+	///*
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	GetPlayerViewPoint( CameraLocation, CameraRotation );
+	//*/
+	
+	//PawnToBeMoved->CustomPawnMovementComp->FireTriggerPullEvent( GetViewTarget() );
+	//PawnToBeMoved->CustomPawnMovementComp->FireTriggerPullEvent( HitResult.GetActor() );
+	PawnToBeMoved->CustomPawnMovementComp->FireTriggerPullEvent( CameraLocation, CameraRotation );
+
 }
 void ACustomPlayerController::CallFireTriggerRelease() {
 

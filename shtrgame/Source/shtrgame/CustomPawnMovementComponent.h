@@ -25,7 +25,7 @@ public:
 	void StrafeEvent( float AxisValue );
 	void LookEvent( float AxisValue );
 
-	void FireTriggerPullEvent();
+	void FireTriggerPullEvent( FVector CameraLocation, FRotator CameraRotation ); //void FireTriggerPullEvent( AActor *ViewTarget );
 	void FireTriggerReleaseEvent();
 	
 	void DashPressEvent();
@@ -47,5 +47,14 @@ private:
 		float RotationSpeed = 100.0f;
 	UPROPERTY( EditAnywhere )
 		float DashSpeed = 90.0f;
+
+	/*
+	// reused code from CO2301 lab 3
+	
+	// help:
+	// https://stackoverflow.com/questions/59587928/tsubclassof-isnt-storing-the-class-type
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AWalkingTeapot> WalkingTeapotClass;
+	//*/
 	
 };

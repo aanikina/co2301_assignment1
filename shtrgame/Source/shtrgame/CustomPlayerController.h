@@ -7,9 +7,6 @@
 #include "WalkingTeapot.h"
 #include "CustomPlayerController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SHTRGAME_API ACustomPlayerController : public APlayerController
 {
@@ -37,5 +34,15 @@ public:
 	virtual void CallDashRelease();
 
 	AWalkingTeapot *PawnToBeMoved;
+
+	/*
+	// reused code from CO2301 lab 3
+	
+	// help:
+	// https://stackoverflow.com/questions/59587928/tsubclassof-isnt-storing-the-class-type
+	// https://docs.unrealengine.com/5.1/en-US/array-containers-in-unreal-engine/
+	// https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982
+	TArray< TEnumAsByte<EObjectTypeQuery> > WalkableClasses;
+	//*/
 	
 };
