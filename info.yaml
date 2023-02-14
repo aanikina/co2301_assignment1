@@ -1,4 +1,4 @@
----
+--- # blender and so on
 3d models:
   disco_cube.fbx:
     date: 2022.12.01
@@ -36,6 +36,12 @@ blender files:
     source: self-made
     status: wip
     desc: future pawn, model ok, armature ok, animations no
+--- # 2d
+images:
+  crosshair.png:
+    date: 2022.12.15
+    source: self-made
+    status: used in unreal widgets as crosshair
 --- # assignment constraints and their practical use
 third person POV: first person POV is unconvenient / 3rd person POV provides smth worthy to look at
 shooter: everyone has some sort of gun and can shoot each other

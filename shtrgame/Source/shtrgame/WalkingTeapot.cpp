@@ -16,11 +16,14 @@ AWalkingTeapot::AWalkingTeapot()
 	// reused code from CO2301 lab2, lab8
 	
 	// initialize components
+
 	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>( TEXT("SkeletalMeshComponent") );
 	CameraComp = CreateDefaultSubobject<UCameraComponent>( TEXT("CameraComponent") );
 	CameraSpringArmComp = CreateDefaultSubobject<USpringArmComponent>( TEXT("CameraSpringArmComponent") );
 	ProjectileSpawnPointSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("ProjectileSpawnPointComponent") );
 	CustomPawnMovementComp = CreateDefaultSubobject<UCustomPawnMovementComponent>( TEXT("CustomPawnMovementComponent") );
+
+	CrosshairSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("CrosshairSceneComponent") );
 	
 	// build component hierarchy
 
@@ -31,6 +34,9 @@ AWalkingTeapot::AWalkingTeapot()
 
 	ProjectileSpawnPointSceneComp->SetupAttachment( SkeletalMeshComp );
 	ProjectileSpawnPointSceneComp->SetRelativeLocation( FVector( 160.0f, 0.0f, 140.0f ) );
+	
+	CrosshairSceneComp->SetupAttachment( SkeletalMeshComp );
+	CrosshairSceneComp->SetRelativeLocation( FVector( 160.0f, 0.0f, 140.0f ) );
 	
 	// this statement doesnt work? 1) delete _BP 2) recompile 3) create new _BP 4) drag it into editor
 	AutoPossessPlayer = EAutoReceiveInput::Player0;

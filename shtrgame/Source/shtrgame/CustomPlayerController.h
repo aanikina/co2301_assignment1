@@ -45,4 +45,15 @@ public:
 	TArray< TEnumAsByte<EObjectTypeQuery> > WalkableClasses;
 	//*/
 	
+public:
+
+	///*
+	// reused code from CO2301 lab 9
+
+	UPROPERTY( EditAnywhere )
+	    TSubclassOf<UUserWidget> CrosshairHUDClass;
+	UPROPERTY()
+	    UUserWidget *CrosshairWidget;
+	//*/
+	
 };

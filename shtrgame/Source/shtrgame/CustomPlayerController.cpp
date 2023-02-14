@@ -3,6 +3,7 @@
 
 #include "CustomPlayerController.h"
 #include "CustomPawnMovementComponent.h"
+#include "Blueprint/UserWidget.h"
 
 // reused code from CO2301 lab8
 
@@ -16,6 +17,16 @@ void ACustomPlayerController::BeginPlay() {
 	//WalkableClasses.Add( AWalkableWall );
 
     PawnToBeMoved = Cast<AWalkingTeapot>( GetPawn() );
+	
+	///*
+	// reused code from CO2301 lab 9
+	
+	CrosshairWidget = CreateWidget( this, CrosshairHUDClass );
+	if( CrosshairWidget != nullptr ) {
+		CrosshairWidget->AddToPlayerScreen();
+	}
+	//*/
+
 
 }
 

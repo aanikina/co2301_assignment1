@@ -38,6 +38,18 @@ void AWalkableWall::BeginPlay()
 
 }
 
+void AWalkableWall::CheckPlaneEquation( AActor *OtherActor ) {
+
+	// help:
+	// http://mathprofi.ru/uravnenie_ploskosti.html
+
+	// equation:
+	// Ax + By + Cz = 0;
+
+
+
+}
+
 /*
 // Called every frame
 void AWalkableWall::Tick(float DeltaTime)
@@ -54,9 +66,24 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 	bool bFromSweep,
 	const FHitResult &SweepResult
 ) {
+
+	// help:
+	// https://stackoverflow.com/questions/72888511/how-to-log-fvector-in-unreal-engine
+
+	///*
+	FRotator OldRot = OtherActor->GetActorRotation();
+	FRotator WallRot = GetActorRotation();
+	FRotator FinalRot = FRotator( WallRot.Roll, OldRot.Yaw, WallRot.Pitch ); // ???
 	
 	UE_LOG( LogTemp, Warning, TEXT("--- AWalkableWall OnCollisionBoxOverlapBegin") );
-	//GameModeRef->PointScored();
+	UE_LOG( LogTemp, Warning, TEXT("pawn rot: %s"), *OldRot.ToString() );
+	UE_LOG( LogTemp, Warning, TEXT("wall rot: %s"), *GetActorRotation().ToString() );
+	UE_LOG( LogTemp, Warning, TEXT("finalrot: %s"), *FinalRot.ToString() );
+
+	OtherActor->SetActorRotation( FinalRot );
+	//AddActorLocalRotation( DeltaRotation, true );
+
+	//*/
 
 }
 

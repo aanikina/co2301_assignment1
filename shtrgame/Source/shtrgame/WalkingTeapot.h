@@ -38,5 +38,8 @@ private:
 		class USpringArmComponent* CameraSpringArmComp;
 	UPROPERTY( VisibleAnywhere )
 		class USceneComponent* ProjectileSpawnPointSceneComp;
+	
+	UPROPERTY( VisibleAnywhere )
+		class USceneComponent* CrosshairSceneComp;
 
 };

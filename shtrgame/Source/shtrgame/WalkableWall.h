@@ -21,8 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	//virtual void Tick(float DeltaTime) override;
+	
+	//virtual void Tick(float DeltaTime) override; // Called every frame
+
+	void CheckPlaneEquation( AActor *OtherActor );
 	
 private:
 
