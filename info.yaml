@@ -57,10 +57,6 @@ lua scripting in unreal:
   - https://forums.unrealengine.com/t/lua-script-plugin/70099
   - https://forums.unrealengine.com/t/official-lua-support/385967
   - https://eliasdaler.wordpress.com/2013/10/11/lua_cpp_binder/
-walking on walls:
-  - https://www.youtube.com/watch?v=BKiSTM-G9pQ # ok tutorial
-  - https://docs.unrealengine.com/4.27/en-US/InteractiveExperiences/Physics/Collision/Overview/ # how collision works in ue4
-  - https://docs.unrealengine.com/4.27/en-US/InteractiveExperiences/Tracing/Overview/ # more about traces
 custom signal/slots:
   - https://forums.unrealengine.com/t/tutorial-creating-and-using-delegates-c-and-accessing-them-in-blueprints/9649
 ...
