@@ -32,7 +32,12 @@ void UCustomPawnMovementComponent::TurnEvent( float AxisValue ) {
 	float RotateAmount = AxisValue*RotationSpeed * GetWorld()->DeltaTimeSeconds;
 
 	// apply
-	PawnOwner->AddControllerYawInput( RotateAmount );
+	
+	//PawnOwner->AddControllerYawInput( RotateAmount );
+	
+	// an actor is standing on some plane
+	// i want the actor to rotate sideways parallel to this plane
+	PawnOwner->AddActorLocalRotation( FRotator( 0.0f, RotateAmount, 0.0f ) );
 
 }
 
