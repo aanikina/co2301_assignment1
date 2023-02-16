@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "CustomPlayerController.h"
 #include "WalkableWall.generated.h"
 
 UCLASS()
@@ -13,18 +15,16 @@ class SHTRGAME_API AWalkableWall : public AActor
 	GENERATED_BODY()
 	
 public:	
+
 	// Sets default values for this actor's properties
 	AWalkableWall();
+	
+	// dont need tick
+	//virtual void Tick(float DeltaTime) override; // Called every frame
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	
-	//virtual void Tick(float DeltaTime) override; // Called every frame
-
-	void CheckPlaneEquation( AActor *OtherActor );
 	
 private:
 
@@ -48,6 +48,7 @@ private:
 			const FHitResult &SweepResult
 		);
 
+	/*
 	UFUNCTION()
 		void OnCollisionBoxOverlapEnd(
 			UPrimitiveComponent *OverlappedComp,
@@ -55,5 +56,6 @@ private:
 			UPrimitiveComponent *OtherComp,
 			int32 OtherBodyIndex
 		);
+	*/
 
 };

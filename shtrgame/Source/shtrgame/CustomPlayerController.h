@@ -32,18 +32,14 @@ public:
 	
 	virtual void CallDashPress();
 	virtual void CallDashRelease();
-
-	AWalkingTeapot *PawnToBeMoved;
-
-	/*
-	// reused code from CO2301 lab 3
 	
-	// help:
-	// https://stackoverflow.com/questions/59587928/tsubclassof-isnt-storing-the-class-type
-	// https://docs.unrealengine.com/5.1/en-US/array-containers-in-unreal-engine/
-	// https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982
-	TArray< TEnumAsByte<EObjectTypeQuery> > WalkableClasses;
-	//*/
+	AWalkingTeapot *PawnToBeMoved = nullptr;
+
+	// a reference to a wall - in the future player will
+	// collide with different walls,
+	// during that collision this variable will
+	// be updated
+	AActor *LastUsedWall = nullptr;
 	
 public:
 
