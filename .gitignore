@@ -4,6 +4,7 @@ shtrgame/Binaries/*
 shtrgame/Intermediate/*
 shtrgame/Saved/*
 shtrgame/shtrgame.sln*
+*temp_folder*
 # these files are tracked separately by git lfs
 #shtrgame/Build/*
 #shtrgame/Content/*
