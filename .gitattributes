@@ -2,3 +2,4 @@ blender_files/* filter=lfs diff=lfs merge=lfs -text
 downloaded_models/* filter=lfs diff=lfs merge=lfs -text
 shtrgame/Build/* filter=lfs diff=lfs merge=lfs -text
 shtrgame/Content/* filter=lfs diff=lfs merge=lfs -text
+drawing_files/* filter=lfs diff=lfs merge=lfs -text

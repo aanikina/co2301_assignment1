@@ -20,6 +20,12 @@
     date: 2022.12.07
     source: self-made from downloaded parts
     status: saved to lfs once, will use in unreal
+drawing files:
+  main_concept.mdp:
+    date: 2023.02.16
+    source: self-made
+    status: wip
+    desc: game title opening graphics
 blender files:
   disco_cube.blend:
     date: 2022.12.01
