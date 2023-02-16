@@ -39,9 +39,12 @@ public:
 	// collide with different walls,
 	// during that collision this variable will
 	// be updated
+	// same goes for the seconds counter
 	AActor *LastUsedWall = nullptr;
-	
-public:
+	float LastUsedWallSeconds = -1.0f; // meaningless for now
+
+	UPROPERTY( VisibleAnywhere )
+		float DelayBetweenWallCollisionSnapping = 1.0f; // seconds
 
 	///*
 	// reused code from CO2301 lab 9

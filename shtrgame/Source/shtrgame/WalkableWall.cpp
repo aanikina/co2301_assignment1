@@ -71,11 +71,35 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 		// i already collided with this wall, not doing anything
 		return;
 	}
+
+	// i have not collided with this wall yet
+	
+	// if i stand between several walls, this collision
+	// will keep firing, so the pawn will rotate chaotically
+	// in order to avoid it, remember and check time difference
+	// help:
+	// https://docs.unrealengine.com/4.27/en-US/BlueprintAPI/Utilities/Time/
+	// https://www.reddit.com/r/unrealengine/comments/bmqpoo/how_to_make_an_acurate_level_timer_0000000/
+
+	float LastUsedWallSeconds = UGameplayStatics::GetRealTimeSeconds( GetWorld() );
+
+	// compare it
+	if( LastUsedWallSeconds - PlayerController->LastUsedWallSeconds < PlayerController->DelayBetweenWallCollisionSnapping ) {
+		// this collision was triggered too fast, most likely
+		// im standing in a corner
+		// not doing anything
+		return;
+	}
+
+	// now i can actually proceed
 	
 	UE_LOG( LogTemp, Log, TEXT("Player's LastUsedWall updated") );
 
 	// remember this wall
 	PlayerController->LastUsedWall = this;
+	
+	// remember current time
+	PlayerController->LastUsedWallSeconds = LastUsedWallSeconds;
 
 	// snap player to this wall
 	// help:
