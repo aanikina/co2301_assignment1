@@ -68,27 +68,13 @@ void UCustomPawnMovementComponent::FireTriggerPullEvent( FVector CameraLocation,
 	// https://cpp.hotexamples.com/examples/-/-/GetActorEyesViewPoint/cpp-getactoreyesviewpoint-function-examples.html
 	// https://forums.unrealengine.com/t/how-to-get-active-camera-object/331893/4
 
-	/*
-	// reused code from CO2301 lab 3
-
-	if( WalkingTeapotClass ) {
-
-
-		FVector SpawnLocation = ProjectileSpawnPointSceneComp->GetComponentLocation();
-		FRotator SpawnRotation = ProjectileSpawnPointSceneComp->GetComponentRotation();
-		AATeabag* TempBag = GetWorld()->SpawnActor<AATeabag>( TeabagClass, SpawnLocation, SpawnRotation );
-
-		TempBag->SetOwner( this );
-	
-	} // if TeabagClass
-	//*/
-
 	//--------------------------------+++
 	// Definitions.
 	
     FHitResult HitResult;
 	FVector StartLocation, EndLocation;
 	FVector CamSightLineEnd;
+	FRotator SecondCameraRotation;
 
 	float RayLength;
 
@@ -99,28 +85,14 @@ void UCustomPawnMovementComponent::FireTriggerPullEvent( FVector CameraLocation,
 	
     RayLength = 2000;
 
-	FRotator test;
-	
-	if( CameraRotation.Pitch<=-30.0f ) {
-		test = FRotator( CameraRotation.Pitch+30.0f, CameraRotation.Yaw, CameraRotation.Roll );
-	}
-	else {
-		test = FRotator( CameraRotation.Pitch+5.0f, CameraRotation.Yaw, CameraRotation.Roll );
-	}
-
 	// i pretend i want to draw a line between camera and something far away at the
 	// center of the screen - i start at CameraLocation and arrive at CamSightLineEnd
-	CamSightLineEnd = CameraLocation + ( test.Vector() )*RayLength;
+	SecondCameraRotation = FRotator( CameraRotation.Pitch, CameraRotation.Yaw, CameraRotation.Roll );
+	CamSightLineEnd = CameraLocation + ( SecondCameraRotation.Vector() )*RayLength;
 
-	// but actually i want to draw a line between pawn and CamSightLineEnd
-	StartLocation = GetOwner()->GetActorLocation();
-    EndLocation = CamSightLineEnd; //ViewTarget->GetActorLocation();
-	
-	UE_LOG( LogTemp, Warning, TEXT("--- fire") );
-	//UE_LOG( LogTemp, Warning, TEXT("start: %s"), *StartLocation.ToString() );
-	//UE_LOG( LogTemp, Warning, TEXT("end  : %s"), *EndLocation.ToString() );
-	UE_LOG( LogTemp, Warning, TEXT("cam   pitch: %s"), *CameraRotation.ToString() );
-	UE_LOG( LogTemp, Warning, TEXT("final pitch: %s"), *test.ToString() );
+	// but actually i want to draw a line between
+	StartLocation = CameraLocation;
+    EndLocation = CamSightLineEnd;
 
     GetOwner()->ActorLineTraceSingle(
 		HitResult,
