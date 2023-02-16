@@ -10,11 +10,6 @@
 void ACustomPlayerController::BeginPlay() {
 
     Super::BeginPlay();
-	
-	// help:
-	// https://forums.unrealengine.com/t/gethitresultundercursorforobjects-array/323982/2
-	// https://cpp.hotexamples.com/examples/-/-/GetHitResultUnderCursorForObjects/cpp-gethitresultundercursorforobjects-function-examples.html
-	//WalkableClasses.Add( AWalkableWall );
 
     PawnToBeMoved = Cast<AWalkingTeapot>( GetPawn() );
 	
