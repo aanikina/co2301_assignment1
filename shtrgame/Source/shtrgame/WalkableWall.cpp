@@ -111,7 +111,7 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 
 	FAttachmentTransformRules rules(
 		EAttachmentRule::KeepWorld, // location
-		EAttachmentRule::SnapToTarget, // rotation
+		EAttachmentRule::KeepRelative, // rotation
 		EAttachmentRule::KeepWorld, // scale
 		true
 		);
