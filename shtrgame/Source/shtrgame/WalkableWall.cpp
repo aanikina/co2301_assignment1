@@ -36,7 +36,7 @@ void AWalkableWall::BeginPlay()
 	// bind collision events
 	CollisionBoxComp->OnComponentBeginOverlap.AddDynamic( this, &AWalkableWall::OnCollisionBoxOverlapBegin );
 
-	// i dont use this
+	// don't need this
 	//CollisionBoxComp->OnComponentEndOverlap.AddDynamic( this, &AWalkableWall::OnCollisionBoxOverlapEnd );
 
 }
@@ -95,6 +95,15 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 	
 	UE_LOG( LogTemp, Log, TEXT("Player's LastUsedWall updated") );
 
+	// detach from previous wall
+	FDetachmentTransformRules DetachmentRules(
+		EDetachmentRule::KeepWorld, // location
+		EDetachmentRule::KeepRelative, // rotation
+		EDetachmentRule::KeepWorld, // scale
+		true
+		);
+	OtherActor->DetachFromActor( DetachmentRules );
+
 	// remember this wall
 	PlayerController->LastUsedWall = this;
 	
@@ -109,7 +118,7 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 	// https://forums.unrealengine.com/t/how-to-attach-components-maintaining-their-orientation/86433
 	// https://d3kjluh73b9h9o.cloudfront.net/original/4X/d/c/7/dc762b96412ad0fe08ca6c9fa8c8f67047ed6629.jpeg
 
-	FAttachmentTransformRules rules(
+	FAttachmentTransformRules AttachmentRules(
 		EAttachmentRule::KeepWorld, // location
 		EAttachmentRule::KeepRelative, // rotation
 		EAttachmentRule::KeepWorld, // scale
@@ -118,8 +127,9 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 
 	OtherActor->AttachToActor(
 		this,
-		rules
+		AttachmentRules
 		);
+
 }
 
 /*
@@ -130,6 +140,39 @@ void AWalkableWall::OnCollisionBoxOverlapEnd(
 	int32 OtherBodyIndex
 ) {
 	
-	//UE_LOG( LogTemp, Warning, TEXT("--- AWalkableWall OnCollisionBoxOverlapEnd") );
+	// make sure i collided with an actor that is being controlled
+	if( OtherActor->GetInstigatorController() == nullptr ) {
+		return;
+	}
+
+	// obtain my custom player controller
+	// that is capable of remembering walls
+	ACustomPlayerController *PlayerController = Cast<ACustomPlayerController>( OtherActor->GetInstigatorController() );
+
+	if( PlayerController->LastUsedWall != this ) {
+		// i have collided with some other wall, no need to do anything here
+		return;
+	}
+
+	// i stopped colliding with this wall, but i have not collided with any
+	// ither wall yet - my pawn is hanging in the air
+	
+	UE_LOG( LogTemp, Log, TEXT("Player is not using any walls") );
+	
+	// reset last used wall so that i can use this wall again
+	PlayerController->LastUsedWall = nullptr;
+
+	// detach the player from this wall
+
+	FDetachmentTransformRules rules(
+		EDetachmentRule::KeepWorld, // location
+		EDetachmentRule::KeepRelative, // rotation
+		EDetachmentRule::KeepWorld, // scale
+		true
+		);
+
+	OtherActor->DetachFromActor(
+		rules
+		);
 
 }*/
