@@ -1,9 +1,5 @@
 --- # blender and so on
-3d models:
-  disco_cube.fbx:
-    date: 2022.12.01
-    source: self-made
-    status: useless, untracked
+downloaded_models:
   utah_teapot.fbx:
     date: 2022.12.01
     source: CO2301 Blackboard
@@ -20,38 +16,71 @@
     date: 2022.12.07
     source: self-made from downloaded parts
     status: saved to lfs once, will use in unreal
-drawing files:
+drawing_files:
   main_concept.mdp:
     date: 2023.02.16
     source: self-made
     status: wip
     desc: game title opening graphics
-blender files:
-  disco_cube.blend:
-    date: 2022.12.01
+  crosshair.mdp:
+    date: 2023.02.18
     source: self-made
-    status: useless, untracked
-    desc: first attempt to follow rigging tutorial
-  scary_cube.blend
-    date: 2022.12.01
-    source: self-made
-    status: useless, untracked
-    desc: first attempt to follow rigging tutorial
+    status: wip
+    desc: game crosshair
+blender_files:
   walking_teapot.blend
     date: 2022.12.01
     source: self-made
     status: wip
     desc: future pawn, model ok, armature ok, animations no
---- # 2d
-images:
-  crosshair.png:
-    date: 2022.12.15
+  wwall_freeway.blend:
+    date: 2023.02.18
     source: self-made
-    status: used in unreal widgets as crosshair
+    status: wip
+    desc: walkable wall that can be connected in 4 directions
+  wwall_isolated.blend:
+    date: 2023.02.18
+    source: self-made
+    status: wip
+    desc: walkable wall that can not be connected in any direction
+  wwall_outlook.blend:
+    date: 2023.02.18
+    source: self-made
+    status: wip
+    desc: walkable wall that can be connected in 1 direction
 --- # assignment constraints and their practical use
 third person POV: first person POV is unconvenient / 3rd person POV provides smth worthy to look at
 shooter: everyone has some sort of gun and can shoot each other
+attacks: both player and enemies can do short-range (projectile spawn) and long-range (raycasting) attacks
+destructable game-changing actors: they crumble away and do something significant (maybe limited by timer)
+sensible enemy actions: efficient and intimidating
+# 40%
+4. OnActorHit, OnComponentHit:
+5. enemy behaviour tree & blackboard:
+6. GameMode with rules, scores...:
+7. sound:
+# 50%
+9. ViewAnywhere/EditAnywhere:
+10. widgets with player info: hp? cooldown?
+12. UGameplayStatics::ApplyDamage:
+13. UProjectileComponent:
+  'player can do at least 2 types of attacks: spawn projectile (must deal damage) / raycast'
+  what each does? different tactical use - not just for damage
+14. c++ timer:
+  game session time? i dont want to encourage speedrun pressure
+  the more time passes, the crazier environment gets?
+  some platforms/triggers/cooldowns?
+15. OnActionBeginOverlap, OnComponentBeginOverlap:
+# 60%
+18. physics Impulse, Radial.., Force:
+19. AIPlayerController:
+20. pathfinding of any sort
+21. same as 5.:
+# 70%
+25. c++
 --- # research / todo
+blender textures:
+  - https://www.reddit.com/r/unrealengine/comments/433zso/texture_issue_when_importing_assets_from_blender/
 python scripting in unreal: # useless - can not run while playing, only while developing/editing
   - https://docs.unrealengine.com/4.27/en-US/ProductionPipelines/ScriptingAndAutomation/Python/
   - https://docs.unrealengine.com/4.27/en-US/PythonAPI/

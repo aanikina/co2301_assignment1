@@ -13,6 +13,4 @@ shtrgame/shtrgame.sln*
 # uesless files
 *.blend1
 *.log
-blender_files/disco_cube*
-blender_files/scary_cube*
 shtrgame/Content/levels/*_BuiltData.uasset
