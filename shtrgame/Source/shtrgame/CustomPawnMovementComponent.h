@@ -42,10 +42,10 @@ public:
 private:
 	
 	UPROPERTY( EditAnywhere )
-		float MoveSpeed = 100.0f;
+		float MoveSpeed = 1000.0f;
 	UPROPERTY( EditAnywhere )
 		float RotationSpeed = 100.0f;
 	UPROPERTY( EditAnywhere )
-		float DashSpeed = 90.0f;
+		float DashSpeed = 900.0f;
 	
 };
