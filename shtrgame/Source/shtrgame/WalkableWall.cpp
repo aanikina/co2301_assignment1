@@ -59,7 +59,7 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 ) {
 
 	// make sure i collided with an actor that is being controlled
-	if( OtherActor->GetInstigatorController() == nullptr ) {
+	if( OtherActor->GetInstigatorController() == NULL ) {
 		return;
 	}
 
