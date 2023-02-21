@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "WalkingTeapot.h"
+#include "Teabag.h"
 #include "CustomPawnMovementComponent.generated.h"
 
 // help:
@@ -47,5 +49,10 @@ private:
 		float RotationSpeed = 100.0f;
 	UPROPERTY( EditAnywhere )
 		float DashSpeed = 900.0f;
+		
+	// reused code from CO2301 lab 3
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<ATeabag> TeabagClass;
 	
 };

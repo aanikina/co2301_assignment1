@@ -37,6 +37,9 @@ void UCustomPawnMovementComponent::TurnEvent( float AxisValue ) {
 	// i want the actor to rotate sideways parallel to this plane
 	PawnOwner->AddActorLocalRotation( FRotator( 0.0f, RotateAmount, 0.0f ) );
 
+	// useless anyway
+	//PawnOwner->AddControllerYawInput( RotateAmount );
+
 }
 
 void UCustomPawnMovementComponent::LookEvent( float AxisValue ) {
@@ -46,6 +49,8 @@ void UCustomPawnMovementComponent::LookEvent( float AxisValue ) {
 	
 	// calc rotation in proper units
 	float RotateAmount = AxisValue*RotationSpeed * GetWorld()->DeltaTimeSeconds;
+
+	//ConstrainDirectionToPlane // how???
 
 	// apply
 	
@@ -106,6 +111,21 @@ void UCustomPawnMovementComponent::FireTriggerPullEvent( FVector CameraLocation,
 
 }
 void UCustomPawnMovementComponent::FireTriggerReleaseEvent() {
+
+	// reused code from CO2301 lab
+
+	if(TeabagClass) {
+	
+		// obtain my custom pawn
+		// it has projectile spawn point
+		AWalkingTeapot *PawnTeapot = Cast<AWalkingTeapot>( PawnOwner );
+
+		FVector SpawnLocation = PawnTeapot->ProjectileSpawnPointSceneComp->GetComponentLocation();
+		FRotator SpawnRotation = PawnTeapot->ProjectileSpawnPointSceneComp->GetComponentRotation();
+		ATeabag* TempBag = GetWorld()->SpawnActor<ATeabag>( TeabagClass, SpawnLocation, SpawnRotation );
+
+	}
+
 }
 
 void UCustomPawnMovementComponent::DashPressEvent() {

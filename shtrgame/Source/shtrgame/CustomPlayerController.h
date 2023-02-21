@@ -43,7 +43,7 @@ public:
 	AActor *LastUsedWall = nullptr;
 	float LastUsedWallSeconds = -1.0f; // meaningless for now
 
-	UPROPERTY( VisibleAnywhere )
+	UPROPERTY( EditAnywhere )
 		float DelayBetweenWallCollisionSnapping = 1.0f; // seconds
 
 	///*

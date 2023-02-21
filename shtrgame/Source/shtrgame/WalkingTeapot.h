@@ -23,6 +23,8 @@ public:
 
 	UPROPERTY( EditAnywhere )
 		class UCustomPawnMovementComponent* CustomPawnMovementComp;
+	UPROPERTY( VisibleAnywhere )
+		class USceneComponent* ProjectileSpawnPointSceneComp;
 	
 private:
 
@@ -36,8 +38,6 @@ private:
 		class UCameraComponent* CameraComp;
 	UPROPERTY( EditAnywhere )
 		class USpringArmComponent* CameraSpringArmComp;
-	UPROPERTY( VisibleAnywhere )
-		class USceneComponent* ProjectileSpawnPointSceneComp;
 	
 	UPROPERTY( VisibleAnywhere )
 		class USceneComponent* CrosshairSceneComp;
