@@ -48,7 +48,6 @@ private:
 			const FHitResult &SweepResult
 		);
 
-	/*
 	UFUNCTION()
 		void OnCollisionBoxOverlapEnd(
 			UPrimitiveComponent *OverlappedComp,
@@ -56,6 +55,5 @@ private:
 			UPrimitiveComponent *OtherComp,
 			int32 OtherBodyIndex
 		);
-	*/
 
 };

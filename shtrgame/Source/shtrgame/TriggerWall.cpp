@@ -1,62 +1,72 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "WalkableWall.h"
-#include "Engine/EngineTypes.h"
 
-// Sets default values
-AWalkableWall::AWalkableWall()
-{
+#include "TriggerWall.h"
+
+ATriggerWall::ATriggerWall() {
+
+	// reused code from WalkableWall actor
+	
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false; // dont need tick
-
-	// reused code from CO2301 lab4
+	//PrimaryActorTick.bCanEverTick = false; // dont need tick
 	
 	// initialize components
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>( TEXT("StaticMeshComponent") );
-	CollisionBoxComp = CreateDefaultSubobject<UBoxComponent>( TEXT("CollisionBoxComponent") );
 	
 	// build component hierarchy
 	SetRootComponent( StaticMeshComp );
-	CollisionBoxComp->SetupAttachment( StaticMeshComp );
-
-	// setup collision box
-	CollisionBoxComp->SetBoxExtent( FVector( 10.0f, 10.0f, 10.0f ) );
-	//CollisionBoxComp->SetRelativeLocation( FVector( 0.0f, 0.0f, 50.0f ) );
-	CollisionBoxComp->SetCollisionProfileName( "Trigger" ); // all possible profile names are in unreal/projectsettings/collision
 
 }
 
-// Called when the game starts or when spawned
-void AWalkableWall::BeginPlay()
-{
+void ATriggerWall::BeginPlay() {
+
 	Super::BeginPlay();
-
-	// reused code from CO2301 lab4
 	
-	// bind collision events
-	CollisionBoxComp->OnComponentBeginOverlap.AddDynamic( this, &AWalkableWall::OnCollisionBoxOverlapBegin );
+	// help:
+	// https://forums.unrealengine.com/t/how-to-use-onactorbeginoverlap-c-code/82889/10
+	// whenever using signature provided on the link, got error that prohibited
+	// naming the first argument "Owner";
+	// with different signature got this error:
+	/*
+	void TSparseDynamicDelegate <FActorBeginOverlapSignature_MCSignature,AActor,FActorBeginOverlapSignatureInfoGetter>::
+		__Internal_AddDynamic<ATriggerWall>(
+		UserClass *,
+		void (__cdecl ATriggerWall::* )(AActor *,AActor *),
+		FName)
+		':
+			cannot convert argument 2 from '
+				void (__cdecl ATriggerWall::* )(AActor *)
+				'
+			to '
+				void (__cdecl ATriggerWall::* )(AActor *,AActor *)
+			'
+	*/
+	// https://www.youtube.com/watch?v=H2I7I8blgn8
+    OnActorBeginOverlap.AddDynamic( this, &ATriggerWall::OnOverlapBegin );
 
-	// don't need this
-	CollisionBoxComp->OnComponentEndOverlap.AddDynamic( this, &AWalkableWall::OnCollisionBoxOverlapEnd );
+	// again got this error:
+	/*
+	void TSparseDynamicDelegate<FActorEndOverlapSignature_MCSignature,AActor,FActorEndOverlapSignatureInfoGetter>::
+	__Internal_AddDynamic<ATriggerWall>(
+		UserClass *,
+		void (__cdecl ATriggerWall::* )(
+			AActor *,AActor *
+			),
+		FName
+		)':
+			cannot convert argument 2 from '
+			void (__cdecl ATriggerWall::* )(
+				UPrimitiveComponent *,AActor *,UPrimitiveComponent *,int32
+				)'
+			to 'void (__cdecl ATriggerWall::* )(AActor *,AActor *)'
 
-}
+	*/
+    OnActorEndOverlap.AddDynamic( this, &ATriggerWall::OnOverlapEnd );
 
-/*
-// Called every frame
-void AWalkableWall::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	}
 
-}*/
-
-void AWalkableWall::OnCollisionBoxOverlapBegin(
-	UPrimitiveComponent *OverlappedComp,
-	AActor *OtherActor,
-	UPrimitiveComponent *OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult &SweepResult
-) {
+//void ATriggerWall::OnOverlapBegin( UPrimitiveComponent *OverlappedComp, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult ) {
+void ATriggerWall::OnOverlapBegin( AActor *OverlappedActor, AActor *OtherActor ) {
 
 	// make sure i collided with an actor that is being controlled
 	if( OtherActor->GetInstigatorController() == nullptr ) {
@@ -83,7 +93,6 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 
 	float LastUsedWallSeconds = UGameplayStatics::GetRealTimeSeconds( GetWorld() );
 
-	// compare it
 	if( LastUsedWallSeconds - PlayerController->LastUsedWallSeconds < PlayerController->DelayBetweenWallCollisionSnapping ) {
 		// this collision was triggered too fast, most likely
 		// im standing in a corner
@@ -132,12 +141,8 @@ void AWalkableWall::OnCollisionBoxOverlapBegin(
 
 }
 
-void AWalkableWall::OnCollisionBoxOverlapEnd(
-	UPrimitiveComponent *OverlappedComp,
-	AActor *OtherActor,
-	UPrimitiveComponent *OtherComp,
-	int32 OtherBodyIndex
-) {
+//void ATriggerWall::OnOverlapEnd( UPrimitiveComponent *OverlappedComp, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex ) {
+void ATriggerWall::OnOverlapEnd( AActor *OverlappedActor, AActor *OtherActor ) {
 
 	// make sure i collided with an actor that is being controlled
 	if( OtherActor->GetInstigatorController() == nullptr ) {
@@ -152,50 +157,33 @@ void AWalkableWall::OnCollisionBoxOverlapEnd(
 		// i have collided with some other wall, no need to do anything here
 		return;
 	}
+	PlayerController->LastUsedWall = nullptr;
 
 	// i stopped colliding with this wall
+	// if i set physics enabled on my pawn then
 	// whenever pawn moves within the collision box, this event is triggered
 	// along with OnCollisionBoxOverlapBegin,
-	// so i want to check time - is OnCollisionBoxOverlapBegin happened too soon,
-	// then my pawn is not hanging in thin air
-	// and should not fall on the floor
+	// i disabled physics but anyway want to check time - is OnCollisionBoxOverlapBegin happened too soon,
+	// then my pawn is ???
 	
 	float LastUsedWallSeconds = UGameplayStatics::GetRealTimeSeconds( GetWorld() );
 
 	if( LastUsedWallSeconds - PlayerController->LastUsedWallSeconds < PlayerController->DelayBetweenWallCollisionSnapping ) {
-		// this collision was triggered too fast, most likely
-		// im moving across this wall
-		// not doing anything
+		// this collision was triggered too fast
 		return;
 	}
 	
 	// now i can actually proceed
-	
-	UE_LOG( LogTemp, Log, TEXT("Player is not using any walls") );
 
-
-	/*
-	// i stopped colliding with this wall, but i have not collided with any
-	// ither wall yet - my pawn is hanging in the air
-	
 	UE_LOG( LogTemp, Log, TEXT("Player is not using any walls") );
 	
-	// reset last used wall so that i can use this wall again
-	PlayerController->LastUsedWall = nullptr;
-
-	// detach the player from this wall
-
-	FDetachmentTransformRules rules(
+	// detach from previous wall
+	FDetachmentTransformRules DetachmentRules(
 		EDetachmentRule::KeepWorld, // location
 		EDetachmentRule::KeepRelative, // rotation
 		EDetachmentRule::KeepWorld, // scale
-		true
+		false
 		);
-
-	OtherActor->DetachFromActor(
-		rules
-		);
-
-	*/
+	OtherActor->DetachFromActor( DetachmentRules );
 
 }
