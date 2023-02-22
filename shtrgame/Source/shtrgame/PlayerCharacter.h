@@ -31,21 +31,28 @@ private:
 	// reused code from CO2301 lab
 	
 	void DriveEvent( float AxisValue );
-	void TurnEvent( float AxisValue );
+	//void TurnEvent( float AxisValue );
 	void StrafeEvent( float AxisValue );
-	void LookEvent( float AxisValue );
+	//void LookEvent( float AxisValue );
 
 	void FireTriggerPullEvent( FVector CameraLocation, FRotator CameraRotation ); //void FireTriggerPullEvent( AActor *ViewTarget );
 	void FireTriggerReleaseEvent();
 	
 	void DashPressEvent();
 	void DashReleaseEvent();
+	void JumpPressEvent();
+	void JumpReleaseEvent();
 	
 	UPROPERTY( EditAnywhere )
 		float MoveSpeed = 1000.0f;
 	UPROPERTY( EditAnywhere )
 		float RotationSpeed = 100.0f;
 	UPROPERTY( EditAnywhere )
-		float DashSpeed = 900.0f;
+		float DashSpeed = 1000.0f;
+		
+	UPROPERTY( VisibleAnywhere )
+		class UCameraComponent* CameraComp;
+	UPROPERTY( VisibleAnywhere )
+		class USpringArmComponent* CameraSpringArmComp;
 
 };
