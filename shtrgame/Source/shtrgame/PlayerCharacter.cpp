@@ -3,6 +3,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "DrawDebugHelpers.h"
 #include "PlayerCharacter.h"
 
 // Sets default values
@@ -47,14 +48,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// https://youtu.be/xZjZimU31wc
 	
 	PlayerInputComponent->BindAxis( TEXT("Drive"), this, &APlayerCharacter::DriveEvent );
-	//PlayerInputComponent->BindAxis( TEXT("Turn"), this, &APlayerCharacter::TurnEvent );
 	PlayerInputComponent->BindAxis( TEXT("Turn"), this, &APlayerCharacter::AddControllerYawInput );
 	PlayerInputComponent->BindAxis( TEXT("Strafe"), this, &APlayerCharacter::StrafeEvent );
-	//PlayerInputComponent->BindAxis( TEXT("Look"), this, &APlayerCharacter::LookEvent );
 	PlayerInputComponent->BindAxis( TEXT("Look"), this, &APlayerCharacter::AddControllerPitchInput );
 	
-	//PlayerInputComponent->BindAction( TEXT("Fire"), IE_Pressed, this, &APlayerCharacter::FireTriggerPullEvent );
-	//PlayerInputComponent->BindAction( TEXT("Fire"), IE_Released, this, &APlayerCharacter::FireTriggerReleaseEvent );
+	PlayerInputComponent->BindAction( TEXT("Fire"), IE_Pressed, this, &APlayerCharacter::FireTriggerPullEvent );
+	PlayerInputComponent->BindAction( TEXT("Fire"), IE_Released, this, &APlayerCharacter::FireTriggerReleaseEvent );
 	
 	PlayerInputComponent->BindAction( TEXT("Dash"), IE_Pressed, this, &APlayerCharacter::DashPressEvent );
 	PlayerInputComponent->BindAction( TEXT("Dash"), IE_Released, this, &APlayerCharacter::DashReleaseEvent );
@@ -69,51 +68,16 @@ void APlayerCharacter::DriveEvent( float AxisValue ) {
 	// reused code from CO2301 lab2
 	
 	AddMovementInput( GetActorForwardVector()*AxisValue, MoveSpeed, false );
-
+	
 }
 
-/*
-void APlayerCharacter::TurnEvent( float AxisValue ) {
-
-	// reused code from CO2301 lab2
-	
-	UE_LOG( LogTemp, Warning, TEXT("TurnEvent") );
-
-	// calc rotation in proper units
-	float RotateAmount = AxisValue*RotationSpeed * GetWorld()->DeltaTimeSeconds;
-
-	// apply
-
-	AddControllerYawInput( RotateAmount );
-
-}*/
-
-/*
-void APlayerCharacter::LookEvent( float AxisValue ) {
-
-	// help:
-	// https://cpp.hotexamples.com/examples/-/-/AddControllerYawInput/cpp-addcontrolleryawinput-function-examples.html
-	
-	UE_LOG( LogTemp, Warning, TEXT("LookEvent") );
-	
-	// calc rotation in proper units
-	float RotateAmount = AxisValue*RotationSpeed * GetWorld()->DeltaTimeSeconds;
-
-	// apply
-	AddControllerPitchInput( RotateAmount );
-
-}*/
-
 void APlayerCharacter::StrafeEvent( float AxisValue ) {
-
-	//FVector DeltaLocation = FVector( 0.0f, AxisValue*MoveSpeed*GetWorld()->DeltaTimeSeconds, 0.0f );
-	//AddActorLocalOffset( DeltaLocation, true );
 
 	AddMovementInput( GetActorRightVector()*AxisValue*MoveSpeed, 1.0f, false );
 
 }
 
-void APlayerCharacter::FireTriggerPullEvent( FVector CameraLocation, FRotator CameraRotation ) {
+void APlayerCharacter::FireTriggerPullEvent() {
 	
 	UE_LOG( LogTemp, Warning, TEXT("FireTriggerPullEvent") );
 
@@ -128,7 +92,6 @@ void APlayerCharacter::FireTriggerPullEvent( FVector CameraLocation, FRotator Ca
     FHitResult HitResult;
 	FVector StartLocation, EndLocation;
 	FVector CamSightLineEnd;
-	FRotator SecondCameraRotation;
 
 	float RayLength;
 
@@ -137,12 +100,14 @@ void APlayerCharacter::FireTriggerPullEvent( FVector CameraLocation, FRotator Ca
 	//--------------------------------+++
 	// Actual code.
 	
+	FRotator CameraRotation = CameraComp->GetComponentRotation();
+	FVector CameraLocation = CameraComp->GetComponentLocation();
+
     RayLength = 2000;
 
 	// i pretend i want to draw a line between camera and something far away at the
 	// center of the screen - i start at CameraLocation and arrive at CamSightLineEnd
-	SecondCameraRotation = FRotator( CameraRotation.Pitch, CameraRotation.Yaw, CameraRotation.Roll );
-	CamSightLineEnd = CameraLocation + ( SecondCameraRotation.Vector() )*RayLength;
+	CamSightLineEnd = CameraLocation + ( CameraRotation.Vector() )*RayLength;
 
 	// but actually i want to draw a line between
 	StartLocation = CameraLocation;
@@ -156,7 +121,7 @@ void APlayerCharacter::FireTriggerPullEvent( FVector CameraLocation, FRotator Ca
  
     // boolean parameter forces lines to be persistent so the raycast is not erased in millisecond
     // last parameter is the width of the lines
-    //DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
+    DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
 
 }
 void APlayerCharacter::FireTriggerReleaseEvent() {
