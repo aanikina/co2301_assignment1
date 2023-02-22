@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
 
 // Sets default values
@@ -11,7 +12,7 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// initialize components
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>( TEXT("CameraComponent") );
@@ -28,7 +29,21 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// player controllers appear only upon begin play - not
+	// in the constructor
+
+	// i want to remember this upcasted controller because
+	// otherwise i will have to upcast it many times
+	// this one fails:
+	//AnoterCharacterController = Cast<AAnotherCharacterPlayerController>(  GetController() );
+	// this one
+	AnotherCharacterController = Cast<AAnotherCharacterPlayerController>(  UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
+
+	if( AnotherCharacterController ) {
+		APlayerCharacter::DrawCurrentGun();
+	}
+
 }
 
 // Called every frame
@@ -77,13 +92,50 @@ void APlayerCharacter::StrafeEvent( float AxisValue ) {
 
 }
 
-void APlayerCharacter::FireTriggerPullEvent() {
+void APlayerCharacter::DrawCurrentGun() {
+
+	// Creates usable gun in the character's hands.
 	
-	UE_LOG( LogTemp, Warning, TEXT("FireTriggerPullEvent") );
+	// make sure haven't drawn gun previously
+	if( CurrentGun ) {
+		return;
+	}
+
+	// make sure i know what type of weapon i have
+	if( !AnotherCharacterController->CurrentGunClass ) {
+		return;
+	}
+
+	// help:
+	// https://forums.unrealengine.com/t/attach-actor-to-socket-via-c/8167
+	// https://forums.unrealengine.com/t/how-to-get-character-mesh-in-c-from-character-blueprint/325816/3
+			
+	//FVector RightHandSocket = GetMesh()->GetSocketLocation("RightHandSocket");
+	//FVector LeftHandSocket = GetMesh()->GetSocketLocation("LeftHandSocket");
+
+	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( AnotherCharacterController->CurrentGunClass );
+
+	// ??? how
+	//CurrentGun->AttachToActor( GetPawn, GetMesh()->GetSocketByName("RightHandSocket") );
+
+}
+
+void APlayerCharacter::FireTriggerPullEvent() {
 
 	// help:
 	// https://www.orfeasel.com/single-line-raycasting/
 	// https://cpp.hotexamples.com/examples/-/-/GetActorEyesViewPoint/cpp-getactoreyesviewpoint-function-examples.html
+	
+	if( !CurrentGun ) {
+		// no gun, dumbfounded
+
+		return;
+
+	}
+
+	CurrentGun->FireTriggerPull();
+
+	//UE_LOG( LogTemp, Warning, TEXT("FireTriggerPullEvent") );
 	// https://forums.unrealengine.com/t/how-to-get-active-camera-object/331893/4
 
 	//--------------------------------+++
@@ -103,7 +155,7 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	FRotator CameraRotation = CameraComp->GetComponentRotation();
 	FVector CameraLocation = CameraComp->GetComponentLocation();
 
-    RayLength = 2000;
+    RayLength = 2000.0f;
 
 	// i pretend i want to draw a line between camera and something far away at the
 	// center of the screen - i start at CameraLocation and arrive at CamSightLineEnd
@@ -126,23 +178,16 @@ void APlayerCharacter::FireTriggerPullEvent() {
 }
 void APlayerCharacter::FireTriggerReleaseEvent() {
 	
-	UE_LOG( LogTemp, Warning, TEXT("FireTriggerReleaseEvent") );
-
-	// reused code from CO2301 lab
-
-	/*
-	if(TeabagClass) {
+	//UE_LOG( LogTemp, Warning, TEXT("FireTriggerReleaseEvent") );
 	
-		// obtain my custom pawn
-		// it has projectile spawn point
-		AWalkingTeapot *PawnTeapot = Cast<AWalkingTeapot>( PawnOwner );
+	if( !CurrentGun ) {
+		// no gun, dumbfounded
 
-		FVector SpawnLocation = PawnTeapot->ProjectileSpawnPointSceneComp->GetComponentLocation();
-		FRotator SpawnRotation = PawnTeapot->ProjectileSpawnPointSceneComp->GetComponentRotation();
-		ATeabag* TempBag = GetWorld()->SpawnActor<ATeabag>( TeabagClass, SpawnLocation, SpawnRotation );
+		return;
 
 	}
-	*/
+	
+	CurrentGun->FireTriggerRelease();
 
 }
 

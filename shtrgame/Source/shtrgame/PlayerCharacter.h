@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AnotherCharacterPlayerController.h"
+#include "GeneralGun.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -31,11 +33,9 @@ private:
 	// reused code from CO2301 lab
 	
 	void DriveEvent( float AxisValue );
-	//void TurnEvent( float AxisValue );
 	void StrafeEvent( float AxisValue );
-	//void LookEvent( float AxisValue );
 
-	void FireTriggerPullEvent( FVector CameraLocation, FRotator CameraRotation ); //void FireTriggerPullEvent( AActor *ViewTarget );
+	void FireTriggerPullEvent();
 	void FireTriggerReleaseEvent();
 	
 	void DashPressEvent();
@@ -54,5 +54,13 @@ private:
 		class UCameraComponent* CameraComp;
 	UPROPERTY( VisibleAnywhere )
 		class USpringArmComponent* CameraSpringArmComp;
+
+	class AAnotherCharacterPlayerController *AnotherCharacterController;
+
+	UPROPERTY( VisibleAnywhere )
+		AGeneralGun *CurrentGun;
+
+	UFUNCTION()
+		void DrawCurrentGun();
 
 };
