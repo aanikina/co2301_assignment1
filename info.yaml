@@ -1,5 +1,31 @@
 --- # blender and so on
+downloaded_sounds:
+  https://pixabay.com/sound-effects/search/rifle/:
+    - lightmachinegun2-7129.mp3
+    - m1-garand-rifle-80192.mp3
+    - explosion-5981.mp3
 downloaded_models:
+  7.62_fbx:
+    date: 2023.02.22
+    link: https://open3dmodel.com/3d-models/cartridges-bullets-shell_300709.html
+  grass_bermuda_01_4k.fbx:
+    date: 2023.02.22
+    link: https://polyhaven.com/a/grass_bermuda_01
+  potted_plant_04_4k.fbx:
+    date: 2023.02.22
+    link: https://polyhaven.com/a/potted_plant_04
+  WetFloorSign_01_4k.fbx:
+    date: 2023.02.22
+    link: https://polyhaven.com/a/WetFloorSign_01
+  Megaphone_01_4k.fbx:
+    date: 2023.02.22
+    link: https://polyhaven.com/a/Megaphone_01
+  marble_bust_01_4k.fbx.zip:
+    date: 2023.02.22
+    link: https://polyhaven.com/a/marble_bust_01
+  Drill_01_4k.fbx:
+    date: 2023.02.22
+    link: https://polyhaven.com/a/Drill_01
   utah_teapot.fbx:
     date: 2022.12.01
     source: CO2301 Blackboard
@@ -28,6 +54,10 @@ drawing_files:
     status: wip
     desc: game crosshair
 blender_files:
+  7.62_blend:
+    date: 2023.02.22
+    link: https://open3dmodel.com/3d-models/cartridges-bullets-shell_300709.html
+    source: downloaded and edited
   walking_teapot.blend
     date: 2022.12.01
     source: self-made
@@ -75,9 +105,6 @@ sensible enemy actions: efficient and intimidating
 18. physics Impulse, Radial.., Force:
 19. AIPlayerController:
 20. pathfinding of any sort
-21. same as 5.:
-# 70%
-25. c++
 --- # research / todo
 blender textures:
   - https://www.reddit.com/r/unrealengine/comments/433zso/texture_issue_when_importing_assets_from_blender/
