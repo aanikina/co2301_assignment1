@@ -13,4 +13,4 @@ shtrgame/shtrgame.sln*
 # uesless files
 *.blend1
 *.log
-#shtrgame/Content/levels/*_BuiltData.uasset
+shtrgame/Content/levels/*_BuiltData.uasset
