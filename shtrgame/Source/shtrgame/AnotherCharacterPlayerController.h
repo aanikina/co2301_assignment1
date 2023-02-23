@@ -20,9 +20,14 @@ private:
 	UPROPERTY( EditAnywhere )
 		float BaseGunSwitchCooldown = 5.0f; // seconds
 
-public:
-
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralGun> CurrentGunClass = nullptr;
+
+public:
+		
+	UFUNCTION()
+		TSubclassOf<AGeneralGun> GetCurrentGunClass();
+	UFUNCTION()
+		void SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunClass );
 
 };

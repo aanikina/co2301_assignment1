@@ -35,12 +35,11 @@ void APlayerCharacter::BeginPlay()
 
 	// i want to remember this upcasted controller because
 	// otherwise i will have to upcast it many times
-	// this one fails:
-	//AnoterCharacterController = Cast<AAnotherCharacterPlayerController>(  GetController() );
-	// this one
-	AnotherCharacterController = Cast<AAnotherCharacterPlayerController>(  UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
-
+	AnotherCharacterController = Cast<AAnotherCharacterPlayerController>(  GetController() );
+	
+	// controller may lack a gun in the beginning of the game
 	if( AnotherCharacterController ) {
+		// controller already has a gun
 		APlayerCharacter::DrawCurrentGun();
 	}
 
@@ -75,6 +74,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	
 	PlayerInputComponent->BindAction( TEXT("Jump"), IE_Pressed, this, &APlayerCharacter::JumpPressEvent );
 	PlayerInputComponent->BindAction( TEXT("Jump"), IE_Released, this, &APlayerCharacter::JumpReleaseEvent );
+	
+	PlayerInputComponent->BindAction( TEXT("DrawGun"), IE_Pressed, this, &APlayerCharacter::DrawGunPressEvent );
+	// useless
+	//PlayerInputComponent->BindAction( TEXT("DrawGun"), IE_Released, this, &APlayerCharacter::DrawGunReleaseEvent );
 
 }
 
@@ -102,21 +105,27 @@ void APlayerCharacter::DrawCurrentGun() {
 	}
 
 	// make sure i know what type of weapon i have
-	if( !AnotherCharacterController->CurrentGunClass ) {
+	if( !AnotherCharacterController->GetCurrentGunClass() ) {
 		return;
 	}
 
 	// help:
 	// https://forums.unrealengine.com/t/attach-actor-to-socket-via-c/8167
 	// https://forums.unrealengine.com/t/how-to-get-character-mesh-in-c-from-character-blueprint/325816/3
+	// code example from CO2301 internship discord
 			
 	//FVector RightHandSocket = GetMesh()->GetSocketLocation("RightHandSocket");
 	//FVector LeftHandSocket = GetMesh()->GetSocketLocation("LeftHandSocket");
 
-	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( AnotherCharacterController->CurrentGunClass );
+	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( AnotherCharacterController->GetCurrentGunClass() );
 
-	// ??? how
-	//CurrentGun->AttachToActor( GetPawn, GetMesh()->GetSocketByName("RightHandSocket") );
+	CurrentGun->AttachToComponent( GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r") );
+    CurrentGun->SetOwner( this );
+	
+	// useless, disabled gun collision
+	// in the blueprint editor
+	//GetMesh()->IgnoreActorWhenMoving( this->CurrentGun, true );
+	//GetMesh()->IgnoreActorWhenMoving( CurrentGun, true );
 
 }
 
@@ -198,6 +207,19 @@ void APlayerCharacter::DashPressEvent() {
 void APlayerCharacter::DashReleaseEvent() {
 	UE_LOG( LogTemp, Warning, TEXT("DashReleaseEvent") );
 	MoveSpeed -= DashSpeed;
+}
+
+void APlayerCharacter::DrawGunPressEvent() {
+
+	//UE_LOG( LogTemp, Warning, TEXT("DrawGunPressEvent") );
+
+	DrawCurrentGun();
+
+}
+void APlayerCharacter::DrawGunReleaseEvent() {
+
+	//UE_LOG( LogTemp, Warning, TEXT("DrawGunReleaseEvent") );
+
 }
 
 void APlayerCharacter::JumpPressEvent() {

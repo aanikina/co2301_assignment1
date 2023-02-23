@@ -42,6 +42,8 @@ private:
 	void DashReleaseEvent();
 	void JumpPressEvent();
 	void JumpReleaseEvent();
+	void DrawGunPressEvent();
+	void DrawGunReleaseEvent();
 	
 	UPROPERTY( EditAnywhere )
 		float MoveSpeed = 1000.0f;

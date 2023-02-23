@@ -27,11 +27,6 @@ public:
 	UPROPERTY( VisibleAnywhere )
 		class USceneComponent* ShellSpawnPointSceneComp;
 		
-	//UFUNCTION()
-		void SpawnBulletShell();
-	//UFUNCTION()
-		void SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotation );
-		
 	UFUNCTION()
 		void FireTriggerPull();
 	UFUNCTION()
@@ -49,5 +44,9 @@ private:
 		
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralShell> BulletShellClass;
+
+	//UFUNCTION()
+		void SpawnBulletShell();
+		void SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotation );
 
 };

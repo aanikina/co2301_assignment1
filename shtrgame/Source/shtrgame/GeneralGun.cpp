@@ -18,7 +18,7 @@ AGeneralGun::AGeneralGun()
 	
 	// build component hierarchy
 	SetRootComponent( StaticMeshComp );
-
+	
 	ShellSpawnPointSceneComp->SetupAttachment( StaticMeshComp );
 
 }
@@ -27,7 +27,7 @@ AGeneralGun::AGeneralGun()
 void AGeneralGun::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
