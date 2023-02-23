@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GeneralShell.h"
+#include "Kismet/GameplayStatics.h"
 #include "GeneralGun.generated.h"
 
 UCLASS()
@@ -41,6 +42,9 @@ private:
 		float BaseDamage = 100.0f;
 	UPROPERTY( EditAnywhere )
 		float BaseAftershotCooldown = 2.0f; // seconds
+		
+	UPROPERTY( EditAnywhere )
+		USoundBase *FireSound;
 		
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralShell> BulletShellClass;

@@ -67,6 +67,17 @@ void AGeneralGun::FireTriggerPull() {
 
 	UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerPull") );
 
+	// bam
+
+	if( FireSound ) {
+		UGameplayStatics::PlaySoundAtLocation(
+		GetWorld(),
+		FireSound,
+		GetActorLocation(),
+		1.0f, 1.0f, 0.0f
+		);
+	}
+
 	// i want to spawn a shell
 	
 	FVector SpawnLocation = ShellSpawnPointSceneComp->GetComponentLocation();
