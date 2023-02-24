@@ -4,6 +4,14 @@ downloaded_sounds:
     - lightmachinegun2-7129.mp3
     - m1-garand-rifle-80192.mp3
     - explosion-5981.mp3
+  https://pixabay.com/sound-effects/search/win/?manual_search=1&order=None:
+    - success-68578
+    - wistful-1-39105.mp3
+    - success_bell-6776
+    - stabstabstab_data-51900
+    - positive_beeps-85504
+    - pick-up-or-found-it-secret-item-104874
+    - message-incoming-132126
 downloaded_models:
   7.62_fbx:
     date: 2023.02.22
