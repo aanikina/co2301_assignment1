@@ -119,7 +119,7 @@ void APlayerCharacter::DrawCurrentGun() {
 
 	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( AnotherCharacterController->GetCurrentGunClass() );
 
-	CurrentGun->AttachToComponent( GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r") );
+	CurrentGun->AttachToComponent( GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponRSocket") );
     CurrentGun->SetOwner( this );
 	
 	// useless, disabled gun collision
