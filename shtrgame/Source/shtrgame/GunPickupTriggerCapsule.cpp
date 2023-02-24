@@ -35,11 +35,11 @@ void AGunPickupTriggerCapsule::BeginPlay()
     OnActorBeginOverlap.AddDynamic( this, &AGunPickupTriggerCapsule::OnOverlapBegin );
     OnActorEndOverlap.AddDynamic( this, &AGunPickupTriggerCapsule::OnOverlapEnd );
 	
-	// allow user input
-	// help:
-	// https://unrealistic.dev/posts/binding-input-in-c
-	//InputComponent->BindAction( TEXT("Interact"), IE_Pressed, this, &AGunPickupTriggerCapsule::InteractButtonPressEvent );
-	//InputComponent->BindAction( TEXT("Interact"), IE_Released, this, &AGunPickupTriggerCapsule::InteractButtonReleaseEvent );
+	// listen to the "interact" signal
+	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
+	if( PlayerController ) {
+		PlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
+		}
 
 	// reused code from CO2301 lab 9
 	
@@ -55,7 +55,7 @@ void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *
 	UE_LOG( LogTemp, Log, TEXT("AGunPickupTriggerCapsule::OnOverlapBegin") );
 	
 	// make sure i collided with an actor that is being controlled
-	// by enther player or ai
+	// by either player or ai
 	if( !OtherActor->GetInstigatorController() ) {
 		return;
 	}
@@ -66,25 +66,19 @@ void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *
 			InteractWidget->AddToViewport( 10 ); // layer 10 just in case
 		}
 	}
-	
-	// this boolean is enabled through blueprint
-	// help:
-	// https://youtu.be/Os7uf-wiU8o
-	//if( bInteractButtonIsPressed ) {
-	
-		// remove interact widget
-		if( InteractWidget ) {
-			if( InteractWidget->IsInViewport() ) {
-				InteractWidget->RemoveFromViewport();
-			}
-		} 
 
-		// i'm sure this is my custom player controller
-		AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
+	// i'm sure this is my custom player controller
+	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
 
-		PlayerController->SetCurrentGunClass( CurrentGunClass );
+	// remove interact widget
+	if( InteractWidget ) {
+		if( InteractWidget->IsInViewport() ) {
+			InteractWidget->RemoveFromViewport();
+		}
+	} 
 
-	//} // if bool..
+
+	PlayerController->SetCurrentGunClass( CurrentGunClass );
 
 }
 
@@ -98,3 +92,10 @@ void AGunPickupTriggerCapsule::OnOverlapEnd( AActor *OverlappedActor, AActor *Ot
 	}
 
 }
+
+void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
+
+	UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress") );
+
+}
+
