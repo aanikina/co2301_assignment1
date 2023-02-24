@@ -60,4 +60,9 @@ private:
 	UFUNCTION()
 		void RespondToInteractSignatureInstancePress(); // AActor* HitActor, UPrimitiveComponent* HitComponent, const FVector& ImpactPoint, const FVector& ImpactNormal, FName HitBoneName, const FHitResult& HitResult)
 
+	void SetVisibleInteractionPrompt( bool Visible );
+	
+	UPROPERTY( VisibleAnywhere )
+	    bool bPlayerIsAllowedToInteract = false;
+
 };

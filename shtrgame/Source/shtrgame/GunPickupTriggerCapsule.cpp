@@ -36,6 +36,7 @@ void AGunPickupTriggerCapsule::BeginPlay()
     OnActorEndOverlap.AddDynamic( this, &AGunPickupTriggerCapsule::OnOverlapEnd );
 	
 	// listen to the "interact" signal
+	// from the player
 	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
 	if( PlayerController ) {
 		PlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
@@ -60,42 +61,73 @@ void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *
 		return;
 	}
 	
-	// show interaction prompt
-	if( InteractWidget ) {
-		if( !InteractWidget->IsInViewport() ) {
-			InteractWidget->AddToViewport( 10 ); // layer 10 just in case
-		}
-	}
-
+	SetVisibleInteractionPrompt( true );
+	bPlayerIsAllowedToInteract = true;
+	
+	/*
 	// i'm sure this is my custom player controller
 	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
-
-	// remove interact widget
-	if( InteractWidget ) {
-		if( InteractWidget->IsInViewport() ) {
-			InteractWidget->RemoveFromViewport();
-		}
-	} 
-
+	
+	SetVisibleInteractionPrompt( false );
 
 	PlayerController->SetCurrentGunClass( CurrentGunClass );
+	*/
 
 }
 
 void AGunPickupTriggerCapsule::OnOverlapEnd( AActor *OverlappedActor, AActor *OtherActor ) {
 	
-	// delete interaction prompt
-	if( InteractWidget ) {
-		if( InteractWidget->IsInViewport() ) {
-			InteractWidget->RemoveFromViewport();
+	SetVisibleInteractionPrompt( false );
+	bPlayerIsAllowedToInteract = false;
+
+}
+
+void AGunPickupTriggerCapsule::SetVisibleInteractionPrompt( bool Visible ) {
+	
+	// make sure i have initialized the prompt
+	if( !InteractWidget ) {
+		return;
+	}
+
+	if( Visible ) {
+		// show interaction prompt
+
+		if( !InteractWidget->IsInViewport() ) {
+			InteractWidget->AddToViewport( 10 ); // layer 10 just in case
 		}
+
+		return;
+	
+	}
+
+	// hide interaction prompt
+
+	if( InteractWidget->IsInViewport() ) {
+		InteractWidget->RemoveFromViewport();
 	}
 
 }
 
 void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 
-	UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress") );
+	//UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress") );
+
+	// make sure player is allowed to interact with it
+	if( !bPlayerIsAllowedToInteract ) {
+		return;
+		}
+
+	// i end up here only when i am within the trigger box
+	// and press appropriate button
+		
+	SetVisibleInteractionPrompt( false );
+	bPlayerIsAllowedToInteract = false;
+	
+	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
+	PlayerController->SetCurrentGunClass( CurrentGunClass );
+
+	// i no longer need this trigger box
+	Destroy();
 
 }
 
