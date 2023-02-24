@@ -28,9 +28,6 @@ class SHTRGAME_API AAnotherCharacterPlayerController : public APlayerController
 public:
 
 	AAnotherCharacterPlayerController();
-	
-	// i want others to access it	
-	void BrieflyShowCurrentGunWidget();
 
 private:
 	
@@ -46,8 +43,6 @@ private:
 	
 	// chooses gun/none widget and toggles it
 	void SetVisibleCurrentGunWidget( bool Visible );
-	// performs the choice betwee weapon icon and empty hand
-	void ChooseCurrentGunWidget();
 	// hides widget
 	void TimerHandleRanOut();
 		
@@ -71,5 +66,10 @@ public:
 	    TSubclassOf<UUserWidget> GunEmptyWidgetClass;
 	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
 	    UUserWidget *CurrentGunWidget;
+	
+	// i want others to access it	
+	void BrieflyShowCurrentGunWidget();
+	// performs the choice betwee weapon icon and empty hand
+	void ChooseCurrentGunWidget();
 
 };

@@ -45,6 +45,13 @@ void AAnotherCharacterPlayerController::TimerHandleRanOut() {
 
 void AAnotherCharacterPlayerController::ChooseCurrentGunWidget() {
 
+	// Forcefully changes CurrentGunWidget.
+
+	// make sure to get rid of already existing
+	// if it exists
+	if( CurrentGunWidget ) {
+		CurrentGunWidget->Destruct();
+	}
 
 	// i don't know yet which widget class to show
 	TSubclassOf<UUserWidget> WidgetToShowClass;
@@ -85,23 +92,33 @@ void AAnotherCharacterPlayerController::SetVisibleCurrentGunWidget( bool Visible
 	if( CurrentGunWidget ) {
 		// here i know i already created this widget
 	
-		if( Visible ) {
-			// show
-			if( !( CurrentGunWidget->IsInViewport() ) ) {
-				CurrentGunWidget->AddToViewport( 5 ); // layer 5 just in case
+		// help:
+		// https://stackoverflow.com/questions/457577/catching-access-violation-exceptions
+		try {
+			if( Visible ) {
+				// show
+				if( !( CurrentGunWidget->IsInViewport() ) ) {
+					CurrentGunWidget->AddToViewport( 5 ); // layer 5 just in case
+				}
+				return;
+			}
+
+			// hide
+			if( CurrentGunWidget->IsInViewport() ) {
+				CurrentGunWidget->RemoveFromViewport();
 			}
 			return;
 		}
-
-		// hide
-		if( CurrentGunWidget->IsInViewport() ) {
-			CurrentGunWidget->RemoveFromViewport();
+		catch( char *e ) {
+			// occasionally
+			// when i look down and click Fire button
+			// widget throws access violation exception
+			// i want to ignore such happenings
+			UE_LOG( LogTemp, Log, TEXT("access violation while toggling widget in AAnotherCharacterPlayerController::SetVisibleCurrentGunWidget becaues %s"), e );
 		}
-		return;
 	}
 
 	// of no, i haven't created this widget yet
-
 	ChooseCurrentGunWidget();
 	
 	// now i have desired widget object

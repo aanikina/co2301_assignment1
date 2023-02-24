@@ -127,6 +127,8 @@ void APlayerCharacter::DrawCurrentGun() {
 	//GetMesh()->IgnoreActorWhenMoving( this->CurrentGun, true );
 	//GetMesh()->IgnoreActorWhenMoving( CurrentGun, true );
 
+	AnotherCharacterController->ChooseCurrentGunWidget();
+
 }
 
 void APlayerCharacter::FireTriggerPullEvent() {
@@ -142,6 +144,8 @@ void APlayerCharacter::FireTriggerPullEvent() {
 		return;
 
 	}
+	
+	AnotherCharacterController->BrieflyShowCurrentGunWidget();
 
 	CurrentGun->FireTriggerPull();
 

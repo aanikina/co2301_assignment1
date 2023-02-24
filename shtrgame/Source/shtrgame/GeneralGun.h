@@ -38,6 +38,9 @@ public:
 	UPROPERTY( EditAnywhere )
 	    TSubclassOf<UUserWidget> IconWidgetClass;
 
+	UFUNCTION()
+		float GetBaseAfterShotCooldown();
+
 private:
 
 	UPROPERTY( VisibleAnywhere )

@@ -7,7 +7,7 @@
 AGeneralGun::AGeneralGun()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	// reused code from CO2301 lab 3
 	
@@ -34,6 +34,12 @@ void AGeneralGun::BeginPlay()
 void AGeneralGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+float AGeneralGun::GetBaseAfterShotCooldown() {
+
+	return BaseAftershotCooldown;
 
 }
 
