@@ -6,6 +6,10 @@
 
 AGunPickupTriggerCapsule::AGunPickupTriggerCapsule() {
 
+	// help:
+	// https://forums.unrealengine.com/t/tick-function-not-triggering/124175/2
+	PrimaryActorTick.bCanEverTick = true;
+
 	// initialize components
 
 	GunPlacementSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("GunPlacementSceneComponent") );
@@ -22,9 +26,13 @@ void AGunPickupTriggerCapsule::BeginPlay()
 	
     // spawn gun actor
     if( CurrentGunClass ) {
+
 	    GunActor = GetWorld()->SpawnActor<AGeneralGun>( CurrentGunClass );
 		GunActor->AttachToComponent( GunPlacementSceneComp, FAttachmentTransformRules::KeepRelativeTransform );
 		GunActor->SetOwner( this );
+
+		// i set custom GunActor scale by editing GunPlacementSceneComp scale
+		// via gui blueprint editor
     }
 
 	// bind events
@@ -108,6 +116,44 @@ void AGunPickupTriggerCapsule::SetVisibleInteractionPrompt( bool Visible ) {
 
 }
 
+void AGunPickupTriggerCapsule::SelfTerminate() {
+
+	if( GunActor ) {
+		GunActor->Destroy();
+	}
+
+	if( InteractWidget ) {
+		// ???
+		//InteractWidget->Destroy();
+	}
+	
+	Destroy();
+
+}
+
+void AGunPickupTriggerCapsule::Tick( float DeltaTime ) {
+	
+	Super::Tick(DeltaTime);
+	
+	//UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::Tick") );
+
+	if( GunActor ) {
+	
+		// rotate yaw
+		GunActor->AddActorLocalRotation( FRotator( 0.0f, IdleRotationSpeed*DeltaTime, 0.0f ) );
+
+		// up and down
+		// this one is extremely slow: ChangingAngle*DeltaTime
+		// so i use IdleHoverSpeed to speed it up
+		float ChangingAngle = GunActor->GetActorRotation().Yaw;
+		GunActor->AddActorLocalOffset( FVector( 0.0f, 0.0f, IdleHoverAmplitude*sinf(ChangingAngle*DeltaTime*IdleHoverSpeed) ) );
+		
+		//UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::Tick %f"), sinf(ChangingAngle*DeltaTime) );
+
+	}
+
+}
+
 void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 
 	//UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress") );
@@ -122,12 +168,21 @@ void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 		
 	SetVisibleInteractionPrompt( false );
 	bPlayerIsAllowedToInteract = false;
-	
+
+	if( InteractSound ) {
+		UGameplayStatics::PlaySoundAtLocation(
+		GetWorld(),
+		InteractSound,
+		GetActorLocation(),
+		1.0f, 1.0f, 0.0f
+		);
+	}
+
 	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
 	PlayerController->SetCurrentGunClass( CurrentGunClass );
 
 	// i no longer need this trigger box
-	Destroy();
+	SelfTerminate();
 
 }
 

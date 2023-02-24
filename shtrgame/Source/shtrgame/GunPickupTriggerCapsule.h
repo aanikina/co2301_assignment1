@@ -21,6 +21,8 @@ public:
 
 	AGunPickupTriggerCapsule();
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 
 	// Called when the game starts or when spawned
@@ -32,7 +34,7 @@ private:
 		TSubclassOf<AGeneralGun> CurrentGunClass = nullptr;
 		
 	// this will be shown in the world
-	UPROPERTY( VisibleAnywhere )
+	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
 		AGeneralGun *GunActor = nullptr;
 		
 	UPROPERTY( VisibleAnywhere )
@@ -54,7 +56,7 @@ private:
 			
 	UPROPERTY( EditAnywhere )
 	    TSubclassOf<UUserWidget> InteractWidgetClass;
-	UPROPERTY( VisibleAnywhere )
+	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
 	    UUserWidget *InteractWidget;
 	
 	UFUNCTION()
@@ -62,7 +64,21 @@ private:
 
 	void SetVisibleInteractionPrompt( bool Visible );
 	
-	UPROPERTY( VisibleAnywhere )
+	// completely destroys this actor
+	UFUNCTION()
+		void SelfTerminate();
+	
+	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
 	    bool bPlayerIsAllowedToInteract = false;
+		
+	UPROPERTY( EditAnywhere )
+		USoundBase *InteractSound;
+		
+	UPROPERTY( EditAnywhere )
+		float IdleRotationSpeed = 30.0f;
+	UPROPERTY( EditAnywhere )
+		float IdleHoverSpeed = 10.0f;
+	UPROPERTY( EditAnywhere )
+		float IdleHoverAmplitude = 1.0f;
 
 };
