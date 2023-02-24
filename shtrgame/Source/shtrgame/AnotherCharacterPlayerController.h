@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "GeneralGun.h"
 #include "Delegates/Delegate.h"
+#include "Kismet/GameplayStatics.h"
+#include "PlayerCharacter.h"
 #include "AnotherCharacterPlayerController.generated.h"
 
 // help:
@@ -23,16 +25,35 @@ class SHTRGAME_API AAnotherCharacterPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+
+	AAnotherCharacterPlayerController();
+	
+	// i want others to access it	
+	void BrieflyShowCurrentGunWidget();
+
 private:
 	
 	void InteractPressEvent();
 	void InteractReleaseEvent();
 
+	// for how many seconds the widgets are visible
 	UPROPERTY( EditAnywhere )
-		float BaseGunSwitchCooldown = 5.0f; // seconds
+		float BaseWidgetShowTime = 0.3f; // seconds
 
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralGun> CurrentGunClass = nullptr;
+	
+	// chooses gun/none widget and toggles it
+	void SetVisibleCurrentGunWidget( bool Visible );
+	// performs the choice betwee weapon icon and empty hand
+	void ChooseCurrentGunWidget();
+	// hides widget
+	void TimerHandleRanOut();
+		
+	// reused code from CO2301 lab 7
+
+	FTimerHandle TimerHandle;
 
 public:
 		
@@ -43,7 +64,12 @@ public:
 	UFUNCTION()
 		void SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunClass );
 
-	UPROPERTY( VisibleAnywhere )
+	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
 		FInteractPressSignature InteractPressSignatureInstance;
+		
+	UPROPERTY( EditAnywhere )
+	    TSubclassOf<UUserWidget> GunEmptyWidgetClass;
+	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
+	    UUserWidget *CurrentGunWidget;
 
 };

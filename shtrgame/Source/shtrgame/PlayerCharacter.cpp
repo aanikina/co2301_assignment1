@@ -138,6 +138,7 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	if( !CurrentGun ) {
 		// no gun, dumbfounded
 
+		AnotherCharacterController->BrieflyShowCurrentGunWidget();
 		return;
 
 	}
@@ -232,4 +233,10 @@ void APlayerCharacter::JumpReleaseEvent() {
 
 	UE_LOG( LogTemp, Warning, TEXT("JumpReleaseEvent") );
 	
+}
+
+AGeneralGun *APlayerCharacter::GetCurrentGun() {
+	
+	return CurrentGun;
+
 }

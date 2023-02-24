@@ -28,6 +28,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// i may need to access actual gun instance
+	// from somewhere else
+	UFUNCTION()
+		AGeneralGun *GetCurrentGun();
+
 private:
 
 	// reused code from CO2301 lab

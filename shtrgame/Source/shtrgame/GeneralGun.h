@@ -32,6 +32,11 @@ public:
 		void FireTriggerPull();
 	UFUNCTION()
 		void FireTriggerRelease();
+		
+	// others should be able to access this class
+	// and create it on demand
+	UPROPERTY( EditAnywhere )
+	    TSubclassOf<UUserWidget> IconWidgetClass;
 
 private:
 
