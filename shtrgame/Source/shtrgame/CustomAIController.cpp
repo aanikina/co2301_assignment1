@@ -1,18 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-//#include "Kismet/GameplayStatics.h"
-//#include "Engine/TargetPoint.h"
-//#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/TargetPoint.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "CustomAIController.h"
 
-/*
 void ACustomAIController::BeginPlay() {
 
     Super::BeginPlay();
-
-    //APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn( GetWorld(), 0 );
-    //SetFocus( PlayerPawn );
 
 	// reused code from CO2301 lab 11
 
@@ -47,7 +43,7 @@ void ACustomAIController::RandomPatrol() {
 
 void ACustomAIController::OnMoveCompleted( FAIRequestID RequestID, const FPathFollowingResult &Result ) {
     
-    //Super::OnMoveCompleted( RequestID, Result );
+    Super::OnMoveCompleted( RequestID, Result );
 
     //RandomPatrol();
 
@@ -56,19 +52,21 @@ void ACustomAIController::OnMoveCompleted( FAIRequestID RequestID, const FPathFo
 void ACustomAIController::Tick( float DeltaTime ) {
 
     Super::Tick( DeltaTime );
-
+    
     // necessary pawns
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn( GetWorld(), 0 );
     APawn* ThisEnemyPawn = GetPawn();
-
-    // remember player location to blackboard
-    //GetBlackboardComponent()->SetValueAsVector( TEXT("PlayerLocation"), PlayerPawn->GetActorLocation() );
-
+    
+    if( GetBlackboardComponent() ) {
+        // remember player location to blackboard
+        GetBlackboardComponent()->SetValueAsVector( TEXT("PlayerLocation"), PlayerPawn->GetActorLocation() );
+    }
+    
     // vector from this enemy to player
     FVector BetweenThisEnemyAndPlayerVector 
         = PlayerPawn->GetActorLocation() - ThisEnemyPawn->GetActorLocation();
     BetweenThisEnemyAndPlayerVector.Normalize();
-
+    
     // where is this enemy facing
     FVector ThisEnemyForwardVector = ThisEnemyPawn->GetActorForwardVector();
     
@@ -79,5 +77,3 @@ void ACustomAIController::Tick( float DeltaTime ) {
     UE_LOG( LogTemp, Warning, TEXT("dot product is: %f"), CosinusBetweenCurrentDirectionAndPlayer );
 
 }
-
-*/

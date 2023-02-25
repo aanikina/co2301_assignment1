@@ -14,7 +14,6 @@ class SHTRGAME_API ACustomAIController : public AAIController
 {
 	GENERATED_BODY()
 
-/*
 protected:
 
 	virtual void BeginPlay() override;
@@ -26,7 +25,7 @@ private:
 	UPROPERTY()
 		TArray<AActor*> Waypoints;
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY( EditAnywhere )
 		UBehaviorTree* EnemyBehaviorTree;
 		
 	AActor* ChooseWaypoint();
@@ -40,6 +39,5 @@ public:
 		FAIRequestID RequestID,
 		const FPathFollowingResult& Result
 	) override;
-*/
 
 };
