@@ -24,6 +24,9 @@ APlayerCharacter::APlayerCharacter()
 	CameraSpringArmComp->SetupAttachment( RootComponent );
 	CameraComp->SetupAttachment( CameraSpringArmComp, USpringArmComponent::SocketName );
 
+	// change maximum speed
+	GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
+
 }
 
 // Called when the game starts or when spawned
@@ -103,14 +106,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::DriveEvent( float AxisValue ) {
 
 	// reused code from CO2301 lab2
-	
-	AddMovementInput( GetActorForwardVector()*AxisValue, MoveSpeed, false );
-	
+
+	// help:
+	// https://forums.unrealengine.com/t/how-to-normalize-a-vector-in-c/436855
+	AddMovementInput( GetActorForwardVector().GetSafeNormal(), AxisValue, false );
+
+	//UE_LOG( LogTemp, Warning, TEXT("vector %s, scale %f"), *(GetActorForwardVector().GetSafeNormal()).ToString(), MoveSpeed*AxisValue*DashSpeed );
+
 }
 
 void APlayerCharacter::StrafeEvent( float AxisValue ) {
 
-	AddMovementInput( GetActorRightVector()*AxisValue*MoveSpeed, 1.0f, false );
+	AddMovementInput( GetActorRightVector(), AxisValue, false );
 
 }
 
@@ -143,6 +150,13 @@ void APlayerCharacter::FireCooldownTimerRanOut() {
 	FireCooldownTimerHandle.Invalidate();
 	
 	SetVisibleEmptyHanded( false );
+
+}
+
+void APlayerCharacter::DashCooldownTimerRanOut() {
+
+	// this will allow to set this timer again
+	DashCooldownTimerHandle.Invalidate();
 
 }
 
@@ -301,12 +315,45 @@ void APlayerCharacter::FireTriggerReleaseEvent() {
 }
 
 void APlayerCharacter::DashPressEvent() {
-	UE_LOG( LogTemp, Warning, TEXT("DashPressEvent") );
-	MoveSpeed += DashSpeed;
+	//UE_LOG( LogTemp, Warning, TEXT("DashPressEvent") );
+	
+	if( DashCooldownTimerHandle.IsValid() ) {
+		// timer is still counting, not doing anything
+		return;
+	}
+
+	// set new timer
+	GetWorld()->GetTimerManager().SetTimer(
+		DashCooldownTimerHandle,
+		this, // which object runs the timer
+		&APlayerCharacter::DashCooldownTimerRanOut, // what to do when the timer runs out
+		BaseDashCooldownTime, // timer duration
+		false // loop the timer?
+	);
+
+	// i want to rush in the direction of currently held keyboard keys
+	// or forward
+
+	FVector Velocity = GetVelocity().GetSafeNormal();
+	//UE_LOG( LogTemp, Warning, TEXT("velocity %s"), *Velocity.ToString() );
+	if( ( Velocity.X==0.0f ) && ( Velocity.Y==0.0f ) && ( Velocity.Z==0.0f ) ) {
+		Velocity = GetActorForwardVector().GetSafeNormal();
+	}
+
+	// help:
+	// https://www.youtube.com/watch?v=GNkQK-lu-rQ
+	// https://forums.unrealengine.com/t/can-t-set-getcharactermovement-borientedrotationtomovement-true-in-my-character-class/138458
+	LaunchCharacter( Velocity*DashSpeed, true, true );
+
 }
+
 void APlayerCharacter::DashReleaseEvent() {
-	UE_LOG( LogTemp, Warning, TEXT("DashReleaseEvent") );
-	MoveSpeed -= DashSpeed;
+	//UE_LOG( LogTemp, Warning, TEXT("DashReleaseEvent") );
+	
+	// help:
+	// https://www.youtube.com/watch?v=GNkQK-lu-rQ
+	//GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
+
 }
 
 void APlayerCharacter::DrawGunPressEvent() {
@@ -325,7 +372,10 @@ void APlayerCharacter::DrawGunReleaseEvent() {
 void APlayerCharacter::JumpPressEvent() {
 	
 	// call already implemented jump function
+	// i don't like it - feels like slowmotion
 	Jump();
+
+	//LaunchCharacter( GetActorUpVector().GetSafeNormal()*JumpSpeed, true, true );
 
 }
 void APlayerCharacter::JumpReleaseEvent() {

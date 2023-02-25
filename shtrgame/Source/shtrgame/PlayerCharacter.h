@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AnotherCharacterPlayerController.h"
 #include "GeneralGun.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -55,8 +56,10 @@ private:
 	// reused code from CO2301 lab 7
 	
 	void FireCooldownTimerRanOut();
-
+	void DashCooldownTimerRanOut();
+	
 	FTimerHandle FireCooldownTimerHandle;
+	FTimerHandle DashCooldownTimerHandle;
 
 	// invisible properties
 		
@@ -72,7 +75,11 @@ private:
 	UPROPERTY( EditAnywhere )
 		float DashSpeed = 1000.0f;
 	UPROPERTY( EditAnywhere )
+		float JumpSpeed = 100.0f;
+	UPROPERTY( EditAnywhere )
 		float BaseFireCooldownTime = 0.3f; // seconds
+	UPROPERTY( EditAnywhere )
+		float BaseDashCooldownTime = 1.0f; // seconds
 		
 	// what to show when i have no gun
 	UPROPERTY( EditAnywhere )
