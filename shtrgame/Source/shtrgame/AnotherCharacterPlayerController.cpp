@@ -88,13 +88,15 @@ void AAnotherCharacterPlayerController::ChooseCurrentGunWidget() {
 }
 
 void AAnotherCharacterPlayerController::SetVisibleCurrentGunWidget( bool Visible ) {
-	
-	if( CurrentGunWidget ) {
-		// here i know i already created this widget
-	
-		// help:
-		// https://stackoverflow.com/questions/457577/catching-access-violation-exceptions
-		try {
+	// help:
+	// https://stackoverflow.com/questions/457577/catching-access-violation-exceptions
+	try {
+
+		// attempt to work with existing widget
+
+		if( CurrentGunWidget ) {
+			// here i know i already created this widget
+		
 			if( Visible ) {
 				// show
 				if( !( CurrentGunWidget->IsInViewport() ) ) {
@@ -108,22 +110,24 @@ void AAnotherCharacterPlayerController::SetVisibleCurrentGunWidget( bool Visible
 				CurrentGunWidget->RemoveFromViewport();
 			}
 			return;
-		}
-		catch( char *e ) {
-			// occasionally
-			// when i look down and click Fire button
-			// widget throws access violation exception
-			// i want to ignore such happenings
-			UE_LOG( LogTemp, Log, TEXT("access violation while toggling widget in AAnotherCharacterPlayerController::SetVisibleCurrentGunWidget becaues %s"), e );
-		}
-	}
+		} // if CurrentGinWidget..
+		
+		// oh no, the widget does not exist yet
 
-	// of no, i haven't created this widget yet
-	ChooseCurrentGunWidget();
+		ChooseCurrentGunWidget(); // forcefully recreates it
 	
-	// now i have desired widget object
-	// i want to call this function again to show it
-	SetVisibleCurrentGunWidget( Visible ); // keep previous option
+		// now i have desired widget object
+		// i want to call this function again to show it
+		SetVisibleCurrentGunWidget( true ); // don't keep previous option because it causes access violation errors?
+
+
+	} catch(...) {
+		// occasionally
+		// when i look down and click Fire button
+		// widget throws access violation exception
+		// i want to ignore such happenings
+		UE_LOG( LogTemp, Log, TEXT("access violation while toggling widget in AAnotherCharacterPlayerController::SetVisibleCurrentGunWidget") );
+	}
 
 }
 
