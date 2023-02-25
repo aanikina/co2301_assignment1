@@ -23,7 +23,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -34,6 +34,8 @@ public:
 		AGeneralGun *GetCurrentGun();
 
 private:
+
+	// invisible events
 
 	// reused code from CO2301 lab
 	
@@ -49,6 +51,19 @@ private:
 	void JumpReleaseEvent();
 	void DrawGunPressEvent();
 	void DrawGunReleaseEvent();
+		
+	// reused code from CO2301 lab 7
+	
+	void FireCooldownTimerRanOut();
+
+	FTimerHandle FireCooldownTimerHandle;
+
+	// invisible properties
+		
+	UPROPERTY()
+		UUserWidget *EmptyHandedWidget;
+
+	// editable properties
 	
 	UPROPERTY( EditAnywhere )
 		float MoveSpeed = 1000.0f;
@@ -56,18 +71,44 @@ private:
 		float RotationSpeed = 100.0f;
 	UPROPERTY( EditAnywhere )
 		float DashSpeed = 1000.0f;
+	UPROPERTY( EditAnywhere )
+		float BaseFireCooldownTime = 0.3f; // seconds
 		
+	// what to show when i have no gun
+	UPROPERTY( EditAnywhere )
+	    TSubclassOf<UUserWidget> EmptyHandedWidgetClass;
+
+	// other properties
+		
+	UPROPERTY( VisibleAnywhere )
+		int GUILayer = 5;
+
 	UPROPERTY( VisibleAnywhere )
 		class UCameraComponent* CameraComp;
 	UPROPERTY( VisibleAnywhere )
 		class USpringArmComponent* CameraSpringArmComp;
-
-	class AAnotherCharacterPlayerController *AnotherCharacterController;
-
+		
+	// i want to easily see chosen player controller
+	UPROPERTY( VisibleAnywhere )
+		class AAnotherCharacterPlayerController *CustomPlayerController;
+	
+	// i want to easily see current gun object instance
 	UPROPERTY( VisibleAnywhere )
 		AGeneralGun *CurrentGun;
 
+	// ufunctions
+
 	UFUNCTION()
 		void DrawCurrentGun();
+
+	UFUNCTION()
+		void SetVisibleEmptyHanded( bool SetVisible );
+		
+	UFUNCTION()
+		void BrieflyShowEmptyHanded();
+		
+	// catch custom signal from player controller
+	UFUNCTION()
+		void RespondToCurrentGunClasChangedSignatureInstance( TSubclassOf<AGeneralGun> NewGunClass );
 
 };

@@ -5,13 +5,14 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 #include "PlayerCharacter.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// initialize components
 
@@ -35,27 +36,46 @@ void APlayerCharacter::BeginPlay()
 
 	// i want to remember this upcasted controller because
 	// otherwise i will have to upcast it many times
-	AnotherCharacterController = Cast<AAnotherCharacterPlayerController>(  GetController() );
+	CustomPlayerController = Cast<AAnotherCharacterPlayerController>( GetController() );
 	
-	// controller may lack a gun in the beginning of the game
-	if( AnotherCharacterController ) {
-		// controller already has a gun
-		APlayerCharacter::DrawCurrentGun();
+	// listen to the "interact" signal
+	// from current custom player controller
+	if( CustomPlayerController ) {
+		CustomPlayerController->CurrentGunClasChangedSignatureInstance.AddDynamic( this, &APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance );
+		}
+
+}
+
+void APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance( TSubclassOf<AGeneralGun> NewGunClass ) {
+
+	//UE_LOG( LogTemp, Warning, TEXT("APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance") );
+
+	// i end up here only when relevant instance of my custom player controller
+	// says it changed current gun class
+		
+	// i want to discard my current gun actor
+	if( CurrentGun ) {
+		CurrentGun->Destroy();
 	}
 
 }
 
+/*
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
+*/
 
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// these events manipulate a player controller
+	// that is specified in the project settings??
 
 	// reused code from CO2301 lab2, lab8
 	// help:
@@ -76,7 +96,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction( TEXT("Jump"), IE_Released, this, &APlayerCharacter::JumpReleaseEvent );
 	
 	PlayerInputComponent->BindAction( TEXT("DrawGun"), IE_Pressed, this, &APlayerCharacter::DrawGunPressEvent );
-	// useless
 	//PlayerInputComponent->BindAction( TEXT("DrawGun"), IE_Released, this, &APlayerCharacter::DrawGunReleaseEvent );
 
 }
@@ -95,29 +114,105 @@ void APlayerCharacter::StrafeEvent( float AxisValue ) {
 
 }
 
+void APlayerCharacter::BrieflyShowEmptyHanded() {
+		
+	// help:
+	// https://docs.unrealengine.com/4.26/en-US/API/Runtime/Engine/Engine/FTimerHandle/
+	if( FireCooldownTimerHandle.IsValid() ) {
+		// timer is running, not doing anything
+		return;
+	}
+
+	SetVisibleEmptyHanded( true );
+
+	// reused code from CO2301 lab 7
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		FireCooldownTimerHandle,
+		this, // which object runs the timer
+		&APlayerCharacter::FireCooldownTimerRanOut, // what to do when the timer runs out
+		BaseFireCooldownTime, // timer duration
+		false // loop the timer?
+	);
+
+}
+
+void APlayerCharacter::FireCooldownTimerRanOut() {
+
+	// this will allow to set this timer again
+	FireCooldownTimerHandle.Invalidate();
+	
+	SetVisibleEmptyHanded( false );
+
+}
+
+void APlayerCharacter::SetVisibleEmptyHanded( bool SetVisible ) {
+
+	// Shows and hides the interaction prompt.
+	
+	// make sure i have initialized the prompt
+	if( !EmptyHandedWidget ) {
+		
+		// reused code from CO2301 lab 9
+	
+		// create the widget for the player, but don't show it yet
+		if( EmptyHandedWidgetClass ) {
+			EmptyHandedWidget = CreateWidget( CustomPlayerController, EmptyHandedWidgetClass );
+			}
+		else {
+			// no class and no widget
+			return;
+		}
+
+	}
+
+	if( SetVisible ) {
+		// show interaction prompt
+
+		if( !( EmptyHandedWidget->IsInViewport() ) ) {
+			EmptyHandedWidget->AddToViewport( GUILayer );
+		}
+
+		return;
+	
+	}
+
+	// hide interaction prompt
+
+	if( EmptyHandedWidget->IsInViewport() ) {
+		EmptyHandedWidget->RemoveFromViewport();
+	}
+
+}
+
 void APlayerCharacter::DrawCurrentGun() {
 
 	// Creates usable gun in the character's hands.
 	
 	// make sure haven't drawn gun previously
 	if( CurrentGun ) {
+
+		// TODO
+		// hide gun away
+		CurrentGun->Destroy();
+		CurrentGun = nullptr;
 		return;
+
 	}
 
-	// make sure i know what type of weapon i have
-	if( !AnotherCharacterController->GetCurrentGunClass() ) {
+	// make sure i know what type of gun i have
+	if( !( CustomPlayerController->GetCurrentGunClass() ) ) {
+		// no gun
+		BrieflyShowEmptyHanded();
 		return;
 	}
 
 	// help:
 	// https://forums.unrealengine.com/t/attach-actor-to-socket-via-c/8167
 	// https://forums.unrealengine.com/t/how-to-get-character-mesh-in-c-from-character-blueprint/325816/3
-	// code example from CO2301 internship discord
-			
-	//FVector RightHandSocket = GetMesh()->GetSocketLocation("RightHandSocket");
-	//FVector LeftHandSocket = GetMesh()->GetSocketLocation("LeftHandSocket");
+	// reused code from example in CO2301 internship discord
 
-	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( AnotherCharacterController->GetCurrentGunClass() );
+	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( CustomPlayerController->GetCurrentGunClass() );
 
 	CurrentGun->AttachToComponent( GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponRSocket") );
     CurrentGun->SetOwner( this );
@@ -127,7 +222,7 @@ void APlayerCharacter::DrawCurrentGun() {
 	//GetMesh()->IgnoreActorWhenMoving( this->CurrentGun, true );
 	//GetMesh()->IgnoreActorWhenMoving( CurrentGun, true );
 
-	AnotherCharacterController->ChooseCurrentGunWidget();
+	//AnotherCharacterController->ChooseCurrentGunWidget();
 
 }
 
@@ -139,13 +234,14 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	
 	if( !CurrentGun ) {
 		// no gun, dumbfounded
-
-		AnotherCharacterController->BrieflyShowCurrentGunWidget();
+		BrieflyShowEmptyHanded();
+		// TODO
+		// lost travolta
 		return;
-
 	}
 	
-	AnotherCharacterController->BrieflyShowCurrentGunWidget();
+	/*
+	//AnotherCharacterController->BrieflyShowCurrentGunWidget();
 
 	CurrentGun->FireTriggerPull();
 
@@ -188,6 +284,7 @@ void APlayerCharacter::FireTriggerPullEvent() {
     // boolean parameter forces lines to be persistent so the raycast is not erased in millisecond
     // last parameter is the width of the lines
     DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
+	*/
 
 }
 void APlayerCharacter::FireTriggerReleaseEvent() {

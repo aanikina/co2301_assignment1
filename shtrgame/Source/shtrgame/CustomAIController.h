@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Kismet/GameplayStatics.h"
-#include "Engine/TargetPoint.h"
 #include "CustomAIController.generated.h"
 
 /**
@@ -16,6 +14,7 @@ class SHTRGAME_API ACustomAIController : public AAIController
 {
 	GENERATED_BODY()
 
+/*
 protected:
 
 	virtual void BeginPlay() override;
@@ -26,5 +25,21 @@ private:
 
 	UPROPERTY()
 		TArray<AActor*> Waypoints;
+	
+	UPROPERTY(EditAnywhere)
+		UBehaviorTree* EnemyBehaviorTree;
+		
+	AActor* ChooseWaypoint();
+	void RandomPatrol();
+
+public:
+	
+	void Tick( float DeltaTime ) override;
+
+	void OnMoveCompleted(
+		FAIRequestID RequestID,
+		const FPathFollowingResult& Result
+	) override;
+*/
 
 };

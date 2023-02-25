@@ -9,9 +9,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "GunPickupTriggerCapsule.generated.h"
 
-/**
- * 
- */
+/*
+This trigger box:
+- displays some gun
+- overlaps with any pawn that is controlled by something (a Player or an AI)
+- allows my custom Player Controller ‡‚0 to pick up the displayed gun
+- disappears after being picked up
+*/
 UCLASS()
 class SHTRGAME_API AGunPickupTriggerCapsule : public ATriggerCapsule
 {
@@ -30,15 +34,48 @@ protected:
 
 private:
 
-	UPROPERTY( EditAnywhere )
-		TSubclassOf<AGeneralGun> CurrentGunClass = nullptr;
+	// hidden uproperties
+	
+	// player is close enough to be able to interact
+	UPROPERTY()
+	    bool bPlayerIsCloseEnoughToInteract = false;
 		
-	// this will be shown in the world
-	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
-		AGeneralGun *GunActor = nullptr;
+	// i want to spawn this actor in the world
+	// so players can see it
+	UPROPERTY()
+		AGeneralGun *GunActor;
 		
+	UPROPERTY()
+		UUserWidget *InteractPrompt;
+
+	// other uproperties
+	
 	UPROPERTY( VisibleAnywhere )
-		class USceneComponent* GunPlacementSceneComp;
+		int GUIPromptLayer = 10;
+	
+	UPROPERTY( EditAnywhere )
+		USoundBase *InteractSound;
+		
+	UPROPERTY( EditAnywhere )
+		float IdleRotationSpeed = 30.0f;
+	UPROPERTY( EditAnywhere )
+		float IdleHoverSpeed = 10.0f;
+	UPROPERTY( EditAnywhere )
+		float IdleHoverAmplitude = 1.0f;
+
+	// which gun will this pickup point hold
+	UPROPERTY( EditAnywhere )
+		TSubclassOf<AGeneralGun> GunActorClass;
+			
+	// choose which prompt is shown when player overlaps with trigger box
+	UPROPERTY( EditAnywhere )
+	    TSubclassOf<UUserWidget> InteractPromptClass;
+		
+	// where and how to spawn gun actor
+	UPROPERTY( VisibleAnywhere )
+		class USceneComponent* GunActorPlacementSceneComp;
+
+	// hidden ufunctions
 
 	// reused code from CO2301 lab4
 
@@ -53,32 +90,16 @@ private:
 			AActor *OverlappedActor,
 			AActor *OtherActor
 			);
-			
-	UPROPERTY( EditAnywhere )
-	    TSubclassOf<UUserWidget> InteractWidgetClass;
-	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
-	    UUserWidget *InteractWidget;
 	
+	// catch custom signal from player controller
 	UFUNCTION()
-		void RespondToInteractSignatureInstancePress(); // AActor* HitActor, UPrimitiveComponent* HitComponent, const FVector& ImpactPoint, const FVector& ImpactNormal, FName HitBoneName, const FHitResult& HitResult)
-
-	void SetVisibleInteractionPrompt( bool Visible );
+		void RespondToInteractSignatureInstancePress();
+		
+	UFUNCTION()
+		void SetVisibleInteractionPrompt( bool SetVisible );
 	
 	// completely destroys this actor
 	UFUNCTION()
 		void SelfTerminate();
-	
-	//UPROPERTY( VisibleAnywhere ) // no need to show this in blueprint
-	    bool bPlayerIsAllowedToInteract = false;
-		
-	UPROPERTY( EditAnywhere )
-		USoundBase *InteractSound;
-		
-	UPROPERTY( EditAnywhere )
-		float IdleRotationSpeed = 30.0f;
-	UPROPERTY( EditAnywhere )
-		float IdleHoverSpeed = 10.0f;
-	UPROPERTY( EditAnywhere )
-		float IdleHoverAmplitude = 1.0f;
 
 };

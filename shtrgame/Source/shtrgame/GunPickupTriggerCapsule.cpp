@@ -12,10 +12,10 @@ AGunPickupTriggerCapsule::AGunPickupTriggerCapsule() {
 
 	// initialize components
 
-	GunPlacementSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("GunPlacementSceneComponent") );
+	GunActorPlacementSceneComp = CreateDefaultSubobject<USceneComponent>( TEXT("GunActorPlacementSceneComponent") );
 	
 	// build component hierarchy
-	SetRootComponent( GunPlacementSceneComp );
+	SetRootComponent( GunActorPlacementSceneComp );
 
 }
 
@@ -25,14 +25,15 @@ void AGunPickupTriggerCapsule::BeginPlay()
 	Super::BeginPlay();
 	
     // spawn gun actor
-    if( CurrentGunClass ) {
+    if( GunActorClass ) {
 
-	    GunActor = GetWorld()->SpawnActor<AGeneralGun>( CurrentGunClass );
-		GunActor->AttachToComponent( GunPlacementSceneComp, FAttachmentTransformRules::KeepRelativeTransform );
+	    GunActor = GetWorld()->SpawnActor<AGeneralGun>( GunActorClass );
+		GunActor->AttachToComponent( GunActorPlacementSceneComp, FAttachmentTransformRules::KeepRelativeTransform );
 		GunActor->SetOwner( this );
 
-		// i set custom GunActor scale by editing GunPlacementSceneComp scale
+		// i set custom GunActor scale by editing GunActorPlacementSceneComp scale
 		// via gui blueprint editor
+
     }
 
 	// bind events
@@ -44,17 +45,10 @@ void AGunPickupTriggerCapsule::BeginPlay()
     OnActorEndOverlap.AddDynamic( this, &AGunPickupTriggerCapsule::OnOverlapEnd );
 	
 	// listen to the "interact" signal
-	// from the player
-	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
-	if( PlayerController ) {
-		PlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
-		}
-
-	// reused code from CO2301 lab 9
-	
-	// create the widget, but don't show it yet
-	if( InteractWidgetClass ) {
-		InteractWidget = CreateWidget( UGameplayStatics::GetPlayerController( GetWorld(), 0 ), InteractWidgetClass );
+	// from this player
+	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
+	if( CustomPlayerController ) {
+		CustomPlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
 		}
 
 }
@@ -64,44 +58,48 @@ void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *
 	UE_LOG( LogTemp, Log, TEXT("AGunPickupTriggerCapsule::OnOverlapBegin") );
 	
 	// make sure i collided with an actor that is being controlled
-	// by either player or ai
-	if( !OtherActor->GetInstigatorController() ) {
+	// by my custom player or ai
+	if( !( OtherActor->GetInstigatorController() ) ) {
 		return;
 	}
 	
 	SetVisibleInteractionPrompt( true );
-	bPlayerIsAllowedToInteract = true;
-	
-	/*
-	// i'm sure this is my custom player controller
-	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
-	
-	SetVisibleInteractionPrompt( false );
-
-	PlayerController->SetCurrentGunClass( CurrentGunClass );
-	*/
+	bPlayerIsCloseEnoughToInteract = true;
 
 }
 
 void AGunPickupTriggerCapsule::OnOverlapEnd( AActor *OverlappedActor, AActor *OtherActor ) {
 	
 	SetVisibleInteractionPrompt( false );
-	bPlayerIsAllowedToInteract = false;
+	bPlayerIsCloseEnoughToInteract = false;
 
 }
 
-void AGunPickupTriggerCapsule::SetVisibleInteractionPrompt( bool Visible ) {
+void AGunPickupTriggerCapsule::SetVisibleInteractionPrompt( bool SetVisible ) {
+
+	// Shows and hides the interaction prompt.
 	
 	// make sure i have initialized the prompt
-	if( !InteractWidget ) {
-		return;
+	if( !InteractPrompt ) {
+		
+		// reused code from CO2301 lab 9
+	
+		// create the widget for the player, but don't show it yet
+		if( InteractPromptClass ) {
+			InteractPrompt = CreateWidget( UGameplayStatics::GetPlayerController( GetWorld(), 0 ), InteractPromptClass );
+			}
+		else {
+			// no class and no widget
+			return;
+		}
+
 	}
 
-	if( Visible ) {
+	if( SetVisible ) {
 		// show interaction prompt
 
-		if( !InteractWidget->IsInViewport() ) {
-			InteractWidget->AddToViewport( 10 ); // layer 10 just in case
+		if( !( InteractPrompt->IsInViewport() ) ) {
+			InteractPrompt->AddToViewport( GUIPromptLayer );
 		}
 
 		return;
@@ -110,8 +108,8 @@ void AGunPickupTriggerCapsule::SetVisibleInteractionPrompt( bool Visible ) {
 
 	// hide interaction prompt
 
-	if( InteractWidget->IsInViewport() ) {
-		InteractWidget->RemoveFromViewport();
+	if( InteractPrompt->IsInViewport() ) {
+		InteractPrompt->RemoveFromViewport();
 	}
 
 }
@@ -122,9 +120,9 @@ void AGunPickupTriggerCapsule::SelfTerminate() {
 		GunActor->Destroy();
 	}
 
-	if( InteractWidget ) {
+	if( InteractPrompt ) {
 		// ???
-		//InteractWidget->Destroy();
+		InteractPrompt->Destruct();
 	}
 	
 	Destroy();
@@ -158,8 +156,8 @@ void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 
 	//UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress") );
 
-	// make sure player is allowed to interact with it
-	if( !bPlayerIsAllowedToInteract ) {
+	// make sure player is close enough to interact with it
+	if( !bPlayerIsCloseEnoughToInteract ) {
 		return;
 		}
 
@@ -167,7 +165,7 @@ void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 	// and press appropriate button
 		
 	SetVisibleInteractionPrompt( false );
-	bPlayerIsAllowedToInteract = false;
+	bPlayerIsCloseEnoughToInteract = false;
 
 	if( InteractSound ) {
 		UGameplayStatics::PlaySoundAtLocation(
@@ -178,11 +176,13 @@ void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 		);
 	}
 
-	AAnotherCharacterPlayerController *PlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
-	PlayerController->SetCurrentGunClass( CurrentGunClass );
+	// tell the controller to change gun
+	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
+	CustomPlayerController->SetCurrentGunClass( GunActorClass );
 
 	// i no longer need this trigger box
+	// TODO:
+	// make it fly away into the sky like a rocket
 	SelfTerminate();
 
 }
-
