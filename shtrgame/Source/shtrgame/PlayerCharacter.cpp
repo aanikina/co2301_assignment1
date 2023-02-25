@@ -242,7 +242,11 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	
 	//AnotherCharacterController->BrieflyShowCurrentGunWidget();
 
-	CurrentGun->FireTriggerPull();
+	// make sure gun has actually fired
+	bool bFireTriggerPulledSuccessfully = CurrentGun->FireTriggerPull();
+	if( !bFireTriggerPulledSuccessfully ) {
+		return;
+	}
 
 	//UE_LOG( LogTemp, Warning, TEXT("FireTriggerPullEvent") );
 	// https://forums.unrealengine.com/t/how-to-get-active-camera-object/331893/4

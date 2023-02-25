@@ -76,9 +76,33 @@ void AGeneralGun::SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotat
 
 }
 
-void AGeneralGun::FireTriggerPull() {
+void AGeneralGun::FireCooldownTimerRanOut() {
+
+	// this will allow to set this timer again
+	FireCooldownTimerHandle.Invalidate();
+
+}
+
+bool AGeneralGun::FireTriggerPull() {
 
 	//UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerPull") );
+	
+	// help:
+	// https://docs.unrealengine.com/4.26/en-US/API/Runtime/Engine/Engine/FTimerHandle/
+	if( FireCooldownTimerHandle.IsValid() ) {
+		// timer is running, not doing anything
+		
+		if( FailedFireSound ) {
+			UGameplayStatics::PlaySoundAtLocation(
+			GetWorld(),
+			FailedFireSound,
+			GetActorLocation(),
+			1.0f, 1.0f, 0.0f
+			);
+		}
+
+		return false;
+	}
 
 	// bam
 
@@ -97,6 +121,19 @@ void AGeneralGun::FireTriggerPull() {
 	FRotator SpawnRotation = ShellSpawnPointSceneComp->GetComponentRotation();
 
 	SpawnBulletShell( SpawnLocation, SpawnRotation );
+	
+	// initiate cooldown
+	// reused code from CO2301 lab 7
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		FireCooldownTimerHandle,
+		this, // which object runs the timer
+		&AGeneralGun::FireCooldownTimerRanOut, // what to do when the timer runs out
+		FireCooldown, // timer duration
+		false // loop the timer?
+	);
+
+	return true;
 
 }
 

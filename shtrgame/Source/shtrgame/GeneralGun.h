@@ -34,7 +34,7 @@ public:
 
 	// i want others to access those
 	UFUNCTION()
-		void FireTriggerPull();
+		bool FireTriggerPull();
 	UFUNCTION()
 		void FireTriggerRelease();
 		
@@ -60,11 +60,13 @@ private:
 	UPROPERTY( EditAnywhere )
 		float BaseDamage = 100.0f;
 	UPROPERTY( EditAnywhere )
-		float FireCooldown = 2.0f; // seconds
+		float FireCooldown = 1.0f; // seconds
 	UPROPERTY( EditAnywhere )
 		float FireDistance = 2000.0f; // ray length for raycasting
 	UPROPERTY( EditAnywhere )
 		USoundBase *FireSound;
+	UPROPERTY( EditAnywhere )
+		USoundBase *FailedFireSound;
 		
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralShell> BulletShellClass;
@@ -73,5 +75,9 @@ private:
 
 	void SpawnBulletShell();
 	void SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotation ); // for batch spawning at same location
+	
+	void FireCooldownTimerRanOut();
+
+	FTimerHandle FireCooldownTimerHandle;
 
 };
