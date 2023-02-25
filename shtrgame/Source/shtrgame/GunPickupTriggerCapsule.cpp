@@ -43,13 +43,6 @@ void AGunPickupTriggerCapsule::BeginPlay()
 	
     OnActorBeginOverlap.AddDynamic( this, &AGunPickupTriggerCapsule::OnOverlapBegin );
     OnActorEndOverlap.AddDynamic( this, &AGunPickupTriggerCapsule::OnOverlapEnd );
-	
-	// listen to the "interact" signal
-	// from this player
-	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
-	if( CustomPlayerController ) {
-		CustomPlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
-		}
 
 }
 
@@ -65,6 +58,13 @@ void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *
 	
 	SetVisibleInteractionPrompt( true );
 	bPlayerIsCloseEnoughToInteract = true;
+	
+	// listen to the "interact" signal
+	// from this player
+	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
+	if( CustomPlayerController ) {
+		CustomPlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
+		}
 
 }
 
@@ -72,6 +72,14 @@ void AGunPickupTriggerCapsule::OnOverlapEnd( AActor *OverlappedActor, AActor *Ot
 	
 	SetVisibleInteractionPrompt( false );
 	bPlayerIsCloseEnoughToInteract = false;
+	
+	// stop listening to the "interact" signal
+	// from this player
+	// because i don't understand, how to check if already listening
+	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
+	if( CustomPlayerController ) {
+		CustomPlayerController->InteractPressSignatureInstance.RemoveDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
+		}
 
 }
 
@@ -152,7 +160,7 @@ void AGunPickupTriggerCapsule::Tick( float DeltaTime ) {
 
 }
 
-void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
+void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress( AAnotherCharacterPlayerController *CustomPlayerController ) {
 
 	//UE_LOG( LogTemp, Warning, TEXT("AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress") );
 
@@ -177,7 +185,7 @@ void AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress() {
 	}
 
 	// tell the controller to change gun
-	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
+	//AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( UGameplayStatics::GetPlayerController( GetWorld(), 0 ) );
 	CustomPlayerController->SetCurrentGunClass( GunActorClass );
 
 	// i no longer need this trigger box

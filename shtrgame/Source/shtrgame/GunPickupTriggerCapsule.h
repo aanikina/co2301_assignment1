@@ -13,7 +13,7 @@
 This trigger box:
 - displays some gun
 - overlaps with any pawn that is controlled by something (a Player or an AI)
-- allows my custom Player Controller ‡‚0 to pick up the displayed gun
+- allows my custom Player Controller of the overlapped pawn to pick up the displayed gun
 - disappears after being picked up
 */
 UCLASS()
@@ -93,7 +93,7 @@ private:
 	
 	// catch custom signal from player controller
 	UFUNCTION()
-		void RespondToInteractSignatureInstancePress();
+		void RespondToInteractSignatureInstancePress( AAnotherCharacterPlayerController *CustomPlayerController );
 		
 	UFUNCTION()
 		void SetVisibleInteractionPrompt( bool SetVisible );

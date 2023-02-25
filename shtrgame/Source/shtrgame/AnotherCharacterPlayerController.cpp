@@ -33,7 +33,7 @@ void AAnotherCharacterPlayerController::SetCurrentGunClass( TSubclassOf<AGeneral
 void AAnotherCharacterPlayerController::InteractPressEvent() {
 	
 	if( InteractPressSignatureInstance.IsBound() ) {
-		InteractPressSignatureInstance.Broadcast();
+		InteractPressSignatureInstance.Broadcast( this );
 	}
 
 	//UE_LOG( LogTemp, Warning, TEXT("AAnotherCharacterPlayerController::InteractPressEvent") );
