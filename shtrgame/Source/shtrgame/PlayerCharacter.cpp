@@ -240,7 +240,6 @@ void APlayerCharacter::FireTriggerPullEvent() {
 		return;
 	}
 	
-	/*
 	//AnotherCharacterController->BrieflyShowCurrentGunWidget();
 
 	CurrentGun->FireTriggerPull();
@@ -255,8 +254,6 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	FVector StartLocation, EndLocation;
 	FVector CamSightLineEnd;
 
-	float RayLength;
-
 	FCollisionQueryParams CollisionParameters;
 
 	//--------------------------------+++
@@ -265,11 +262,9 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	FRotator CameraRotation = CameraComp->GetComponentRotation();
 	FVector CameraLocation = CameraComp->GetComponentLocation();
 
-    RayLength = 2000.0f;
-
 	// i pretend i want to draw a line between camera and something far away at the
 	// center of the screen - i start at CameraLocation and arrive at CamSightLineEnd
-	CamSightLineEnd = CameraLocation + ( CameraRotation.Vector() )*RayLength;
+	CamSightLineEnd = CameraLocation + ( CameraRotation.Vector() ) * CurrentGun->GetFireDistance();
 
 	// but actually i want to draw a line between
 	StartLocation = CameraLocation;
@@ -284,7 +279,6 @@ void APlayerCharacter::FireTriggerPullEvent() {
     // boolean parameter forces lines to be persistent so the raycast is not erased in millisecond
     // last parameter is the width of the lines
     DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
-	*/
 
 }
 void APlayerCharacter::FireTriggerReleaseEvent() {

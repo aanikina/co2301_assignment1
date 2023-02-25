@@ -23,11 +23,16 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
+
+	// other properties
 
 	UPROPERTY( VisibleAnywhere )
 		class USceneComponent* ShellSpawnPointSceneComp;
 		
+	// ufunctions
+
+	// i want others to access those
 	UFUNCTION()
 		void FireTriggerPull();
 	UFUNCTION()
@@ -37,28 +42,36 @@ public:
 	// and create it on demand
 	UPROPERTY( EditAnywhere )
 	    TSubclassOf<UUserWidget> IconWidgetClass;
-
+		
 	UFUNCTION()
-		float GetBaseAfterShotCooldown();
+		float GetFireCooldown();
+	UFUNCTION()
+		float GetFireDistance();
 
 private:
 
+	// other properties
+
 	UPROPERTY( VisibleAnywhere )
 		UStaticMeshComponent* StaticMeshComp;
+
+	// editable properties
 		
 	UPROPERTY( EditAnywhere )
 		float BaseDamage = 100.0f;
 	UPROPERTY( EditAnywhere )
-		float BaseAftershotCooldown = 2.0f; // seconds
-		
+		float FireCooldown = 2.0f; // seconds
+	UPROPERTY( EditAnywhere )
+		float FireDistance = 2000.0f; // ray length for raycasting
 	UPROPERTY( EditAnywhere )
 		USoundBase *FireSound;
 		
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralShell> BulletShellClass;
+		
+	// invisible functions
 
-	//UFUNCTION()
-		void SpawnBulletShell();
-		void SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotation );
+	void SpawnBulletShell();
+	void SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotation ); // for batch spawning at same location
 
 };

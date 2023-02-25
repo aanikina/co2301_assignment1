@@ -30,16 +30,23 @@ void AGeneralGun::BeginPlay()
 
 }
 
+/*
 // Called every frame
 void AGeneralGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}*/
+
+float AGeneralGun::GetFireCooldown() {
+
+	return FireCooldown;
+
 }
 
-float AGeneralGun::GetBaseAfterShotCooldown() {
+float AGeneralGun::GetFireDistance() {
 
-	return BaseAftershotCooldown;
+	return FireDistance;
 
 }
 
@@ -71,7 +78,7 @@ void AGeneralGun::SpawnBulletShell( FVector &SpawnLocation, FRotator &SpawnRotat
 
 void AGeneralGun::FireTriggerPull() {
 
-	UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerPull") );
+	//UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerPull") );
 
 	// bam
 
@@ -84,7 +91,7 @@ void AGeneralGun::FireTriggerPull() {
 		);
 	}
 
-	// i want to spawn a shell
+	// i want to spawn some shells at the same location
 	
 	FVector SpawnLocation = ShellSpawnPointSceneComp->GetComponentLocation();
 	FRotator SpawnRotation = ShellSpawnPointSceneComp->GetComponentRotation();
