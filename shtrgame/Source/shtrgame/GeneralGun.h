@@ -8,6 +8,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "GeneralGun.generated.h"
 
+/*
+This is a generic Gun. It should be customised via blueprint editor. It can
+- do something on fire trigger pull
+- spawn a bullet shell on fire trigger pull
+- do something on fire trigger release
+- have a cooldown / don't have a cooldown between shots
+*/
 UCLASS()
 class SHTRGAME_API AGeneralGun : public AActor
 {
@@ -47,6 +54,8 @@ public:
 		float GetFireCooldown();
 	UFUNCTION()
 		float GetFireDistance();
+	UFUNCTION()
+		float GetDamage();
 
 private:
 

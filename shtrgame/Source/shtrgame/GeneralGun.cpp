@@ -87,22 +87,43 @@ bool AGeneralGun::FireTriggerPull() {
 
 	//UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerPull") );
 	
-	// help:
-	// https://docs.unrealengine.com/4.26/en-US/API/Runtime/Engine/Engine/FTimerHandle/
-	if( FireCooldownTimerHandle.IsValid() ) {
-		// timer is running, not doing anything
+	// monitor cooldown if i have one, skip if i don't
+	// reused code from CO2301 lab 7
+	
+	if( FireCooldown>0.0f ) {
+
+		// help:
+		// https://docs.unrealengine.com/4.26/en-US/API/Runtime/Engine/Engine/FTimerHandle/
+		if( FireCooldownTimerHandle.IsValid() ) {
+			// timer is running, not doing anything
 		
-		if( FailedFireSound ) {
-			UGameplayStatics::PlaySoundAtLocation(
-			GetWorld(),
-			FailedFireSound,
-			GetActorLocation(),
-			1.0f, 1.0f, 0.0f
-			);
+			if( FailedFireSound ) {
+				UGameplayStatics::PlaySoundAtLocation(
+				GetWorld(),
+				FailedFireSound,
+				GetActorLocation(),
+				1.0f, 1.0f, 0.0f
+				);
+			}
+
+			return false;
 		}
 
-		return false;
+		// timer is not running, this means
+		// i have no cooldown yet
+		// i want to start it and finish this attack
+
+		GetWorld()->GetTimerManager().SetTimer(
+			FireCooldownTimerHandle,
+			this, // which object runs the timer
+			&AGeneralGun::FireCooldownTimerRanOut, // what to do when the timer runs out
+			FireCooldown, // timer duration
+			false // loop the timer?
+		);
+
 	}
+
+	// finish the attack
 
 	// bam
 
@@ -121,17 +142,6 @@ bool AGeneralGun::FireTriggerPull() {
 	FRotator SpawnRotation = ShellSpawnPointSceneComp->GetComponentRotation();
 
 	SpawnBulletShell( SpawnLocation, SpawnRotation );
-	
-	// initiate cooldown
-	// reused code from CO2301 lab 7
-	
-	GetWorld()->GetTimerManager().SetTimer(
-		FireCooldownTimerHandle,
-		this, // which object runs the timer
-		&AGeneralGun::FireCooldownTimerRanOut, // what to do when the timer runs out
-		FireCooldown, // timer duration
-		false // loop the timer?
-	);
 
 	return true;
 
@@ -140,5 +150,13 @@ bool AGeneralGun::FireTriggerPull() {
 void AGeneralGun::FireTriggerRelease() {
 
 	UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerRelease") );
+
+}
+
+float AGeneralGun::GetDamage() {
+
+	// Returns the exact damage this gun can cause.
+
+	return BaseDamage; // no upgrades yet
 
 }
