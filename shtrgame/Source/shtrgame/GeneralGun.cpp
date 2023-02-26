@@ -149,7 +149,7 @@ bool AGeneralGun::FireTriggerPull() {
 
 void AGeneralGun::FireTriggerRelease() {
 
-	UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerRelease") );
+	//UE_LOG( LogTemp, Warning, TEXT("AGeneralGun::FireTriggerRelease") );
 
 }
 
