@@ -74,6 +74,6 @@ void ACustomAIController::Tick( float DeltaTime ) {
     float CosinusBetweenCurrentDirectionAndPlayer = FVector::DotProduct(
         BetweenThisEnemyAndPlayerVector, ThisEnemyForwardVector
     );
-    UE_LOG( LogTemp, Warning, TEXT("dot product is: %f"), CosinusBetweenCurrentDirectionAndPlayer );
+    //UE_LOG( LogTemp, Warning, TEXT("dot product is: %f"), CosinusBetweenCurrentDirectionAndPlayer );
 
 }
