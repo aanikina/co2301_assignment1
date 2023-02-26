@@ -9,6 +9,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerCharacter.generated.h"
 
+/*
+This Custom Player Character
+- is supposed to work with my Custom Player Controller
+- is supposed to work with my Custom Enemy AI Controller
+*/
 UCLASS()
 class SHTRGAME_API APlayerCharacter : public ACharacter
 {
@@ -87,7 +92,9 @@ private:
 
 	// other properties
 		
-	UPROPERTY( VisibleAnywhere )
+	// i want to be able to manually set necessary gui layer
+	// for all relevant widgets
+	UPROPERTY( EditAnywhere )
 		int GUILayer = 5;
 
 	UPROPERTY( VisibleAnywhere )
