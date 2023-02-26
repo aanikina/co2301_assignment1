@@ -13,6 +13,8 @@
 This Custom Player Character
 - is supposed to work with my Custom Player Controller
 - is supposed to work with my Custom Enemy AI Controller
+- can deal damage
+- has HP and can take damage
 */
 UCLASS()
 class SHTRGAME_API APlayerCharacter : public ACharacter
@@ -62,9 +64,18 @@ private:
 	
 	void FireCooldownTimerRanOut();
 	void DashCooldownTimerRanOut();
-	
+
 	FTimerHandle FireCooldownTimerHandle;
 	FTimerHandle DashCooldownTimerHandle;
+		
+	// reused code from CO2301 lab with saucers
+	
+	virtual float TakeDamage(
+		float DamageAmount,
+		const struct FDamageEvent& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+		) override;
 
 	// invisible properties
 		
@@ -85,6 +96,10 @@ private:
 		float BaseFireCooldownTime = 0.3f; // seconds
 	UPROPERTY( EditAnywhere )
 		float BaseDashCooldownTime = 1.0f; // seconds
+
+	// how much health this pawn has
+	UPROPERTY( EditAnywhere )
+		float StatsHP = 1000.0f;
 		
 	// what to show when i have no gun
 	UPROPERTY( EditAnywhere )

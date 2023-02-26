@@ -58,7 +58,12 @@ void APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance( TSubclas
 		
 	// i want to discard my current gun actor
 	if( CurrentGun ) {
+		// if i end up here
+		// it means i have previously drawn my gun - i'm not walking around empty handed
+		// so i want to draw my gun again after replacing it
 		CurrentGun->Destroy();
+		CurrentGun = nullptr;
+		DrawCurrentGun();
 	}
 
 }
@@ -205,9 +210,7 @@ void APlayerCharacter::DrawCurrentGun() {
 	
 	// make sure haven't drawn gun previously
 	if( CurrentGun ) {
-
-		// TODO
-		// hide gun away
+		// i want to hide my current gun away
 		CurrentGun->Destroy();
 		CurrentGun = nullptr;
 		return;
@@ -253,8 +256,6 @@ void APlayerCharacter::FireTriggerPullEvent() {
 		// lost travolta
 		return;
 	}
-	
-	//AnotherCharacterController->BrieflyShowCurrentGunWidget();
 
 	// make sure gun has actually fired
 	bool bFireTriggerPulledSuccessfully = CurrentGun->FireTriggerPull();
@@ -262,43 +263,88 @@ void APlayerCharacter::FireTriggerPullEvent() {
 		return;
 	}
 
-	//UE_LOG( LogTemp, Warning, TEXT("FireTriggerPullEvent") );
-	// https://forums.unrealengine.com/t/how-to-get-active-camera-object/331893/4
-
-	//--------------------------------+++
-	// Definitions.
-	
-    FHitResult HitResult;
-	FVector StartLocation, EndLocation;
-	FVector CamSightLineEnd;
-
-	FCollisionQueryParams CollisionParameters;
-
-	//--------------------------------+++
-	// Actual code.
-	
-	FRotator CameraRotation = CameraComp->GetComponentRotation();
-	FVector CameraLocation = CameraComp->GetComponentLocation();
+	// draw a line between attacker and victim
 
 	// i pretend i want to draw a line between camera and something far away at the
-	// center of the screen - i start at CameraLocation and arrive at CamSightLineEnd
-	CamSightLineEnd = CameraLocation + ( CameraRotation.Vector() ) * CurrentGun->GetFireDistance();
+	// center of the screen - i start at CameraLocation and arrive at CamSightLineEnd	
+	FRotator CameraRotation = CameraComp->GetComponentRotation();
+	FVector CameraLocation = CameraComp->GetComponentLocation();
+	FVector CamSightLineEnd = CameraLocation + ( CameraRotation.Vector() ) * CurrentGun->GetFireDistance();
 
 	// but actually i want to draw a line between
-	StartLocation = CameraLocation;
-    EndLocation = CamSightLineEnd;
-
-    GetOwner()->ActorLineTraceSingle(
-		HitResult,
-		StartLocation, EndLocation,
-		ECollisionChannel::ECC_WorldDynamic, CollisionParameters
-		);
- 
+	FVector StartLocation = CameraLocation;
+    FVector EndLocation = CamSightLineEnd;
+	
     // boolean parameter forces lines to be persistent so the raycast is not erased in millisecond
     // last parameter is the width of the lines
     DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
 
+	/*
+	// apperently this checks if somebody hit me, not if i hit somebody
+	// useless
+	// help:
+	// https://docs.unrealengine.com/5.1/en-US/API/Runtime/Engine/GameFramework/AActor/ActorLineTraceSingle/
+	FHitResult RaycastHitResult;
+    GetOwner()->ActorLineTraceSingle(
+		RaycastHitResult,
+		StartLocation, EndLocation,
+		ECollisionChannel::ECC_WorldDynamic, CollisionParameters
+		);
+	*/
+
+	// perform an actual line trace to determine who got shot
+	
+	// help:
+	// reused code from CO2301 lecture about raytracing
+	// http://jollymonsterstudio.com/2019/01/06/unreal-engine-c-fundamentals-linetracesinglebychannel-and-friends-drawdebugbox-drawdebugline-fhitresult-and-vrandcone/
+	
+	//FCollisionQueryParams CollisionParameters;
+	FCollisionQueryParams TraceParams( FName(TEXT("InteractTrace")), true, NULL );
+
+	FHitResult RaycastHitResult;
+	bool bIsHit = GetWorld()->LineTraceSingleByChannel(
+		RaycastHitResult,
+		StartLocation,
+		EndLocation,
+		ECC_GameTraceChannel13,
+		TraceParams
+	);
+ 
+	// make sure i actually hit an actor
+	if( !bIsHit ) {
+		// nothing got hit, not doing anything
+		//UE_LOG( LogTemp, Warning, TEXT("nothing at all got hit") );
+		return;
+	}
+	AActor *HitActor = RaycastHitResult.GetActor();
+	if( !HitActor ) {
+		// no actor got hit, not doing anything
+		//UE_LOG( LogTemp, Warning, TEXT("no actor got hit") );
+		return;
+	}
+	//UE_LOG( LogTemp, Warning, TEXT("Actor %s: AAAAAAAAAAAAAAAAaa"), HitActor ); // function GetName() fails
+	
+	// i want to apply damage to the thing i shot
+	
+	// reused code from example in CO2301 internship discord
+
+	float DamageDealt = CurrentGun->GetDamage();
+
+	// create proper event
+	FHitResult DamageEventHitResult;
+	FPointDamageEvent DamageEvent( DamageDealt, DamageEventHitResult, EndLocation, nullptr );
+	
+	// send it to someone who can receive it
+	// apparently those who can not receive it silently ignore it
+	HitActor->TakeDamage(
+		DamageDealt, // why do i duplicate it? i already have it in the DamageEvent
+		DamageEvent,
+		GetController(), // not upcasted version of my custom player/ai controller
+		this
+		);
+
 }
+
 void APlayerCharacter::FireTriggerReleaseEvent() {
 	
 	//UE_LOG( LogTemp, Warning, TEXT("FireTriggerReleaseEvent") );
@@ -387,5 +433,20 @@ void APlayerCharacter::JumpReleaseEvent() {
 AGeneralGun *APlayerCharacter::GetCurrentGun() {
 	
 	return CurrentGun;
+
+}
+
+float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &DamageEvent, AController *EventInstigator, AActor *DamageCauser ) {
+	
+	UE_LOG( LogTemp, Warning, TEXT("APlayerCharacter::TakeDamage") );
+
+	StatsHP -= DamageAmount;
+
+	if( StatsHP<=0.0f ) {
+		//GameModeRef->PlateBroken();
+		Destroy();
+	}
+
+	return DamageAmount;
 
 }
