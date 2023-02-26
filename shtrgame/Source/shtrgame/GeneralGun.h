@@ -67,7 +67,14 @@ private:
 	// editable properties
 		
 	UPROPERTY( EditAnywhere )
-		float BaseDamage = 100.0f;
+		float StatsBaseDamage = 100.0f;
+	// percentage of attacks that land a crit, 1=100%
+	UPROPERTY( EditAnywhere )
+		float StatsBaseCritRate = 0.1f;
+	// how much additional damage derived from base damage this gun can deal
+	UPROPERTY( EditAnywhere )
+		float StatsBaseCritMultiplier = 0.5f;
+
 	UPROPERTY( EditAnywhere )
 		float FireCooldown = 1.0f; // seconds
 	UPROPERTY( EditAnywhere )

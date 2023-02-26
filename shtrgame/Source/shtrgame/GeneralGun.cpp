@@ -157,6 +157,44 @@ float AGeneralGun::GetDamage() {
 
 	// Returns the exact damage this gun can cause.
 
-	return BaseDamage; // no upgrades yet
+	// TODO
+	// return also bool if i have a crit
+	// how to merge it with the Player Character's crit?
+	// how to merge it with the Enemy AI Controller's crit? (rookie, mercenary and veteran will have different stats)
+	// how to merge it with upgrades?
+	// most likely i will calculate damage not here,
+	// but in the character class
+	// the gun will only return it's stats
+	// also i want different sound effects depending on the damage
+	// but sound effects should be private to a gun...
+	// unskilled character may accidentally crit if he uses a 'good' gun,
+	// so gun's crit and character's crit should be different...
+
+	//-----------------------+++
+	// Definitions.
+
+	float AdditionalCritDamage = 0.0f;
+	
+	//-----------------------+++
+	// Actual code.
+	
+	// do i have a crit?
+
+	// generate random float between zero and 1
+	float Critiloc = FMath::RandRange( 0.0f, 1.0f );
+
+	// for example i got Critiloc=0.05f
+	// and my StatsBaseCritRate=0.10f
+	// this means that Critiloc <= StatsBaseCritRate
+	// this means i got critical hit!
+	// the higher StatsBaseCritRate, the higher are the odds that my
+	// randomly generated Critiloc will be less/equal to StatsBaseCritRate
+	if( Critiloc<=StatsBaseCritRate ) { 
+		AdditionalCritDamage = StatsBaseDamage*StatsBaseCritMultiplier;
+	}
+
+	// final damage calculation
+
+	return StatsBaseDamage + AdditionalCritDamage; // no upgrades yet
 
 }

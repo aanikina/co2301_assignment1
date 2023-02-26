@@ -100,6 +100,9 @@ private:
 	// how much health this pawn has
 	UPROPERTY( EditAnywhere )
 		float StatsHP = 1000.0f;
+	// percentage of attacks that land a crit, 1=100%
+	//UPROPERTY( EditAnywhere )
+	//	float StatsCritRate = 0.1f;
 		
 	// what to show when i have no gun
 	UPROPERTY( EditAnywhere )
