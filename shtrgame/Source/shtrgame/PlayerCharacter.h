@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AnotherCharacterPlayerController.h"
+#include "CustomAIController.h"
 #include "GeneralGun.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PlayerCharacter.generated.h"
@@ -120,9 +121,11 @@ private:
 	UPROPERTY( VisibleAnywhere )
 		class USpringArmComponent* CameraSpringArmComp;
 		
-	// i want to easily see chosen player controller
+	// i want to easily see chosen player/ai controller
 	UPROPERTY( VisibleAnywhere )
 		class AAnotherCharacterPlayerController *CustomPlayerController;
+	UPROPERTY( VisibleAnywhere )
+		class ACustomAIController *CustomBotController;
 	
 	// i want to easily see current gun object instance
 	UPROPERTY( VisibleAnywhere )

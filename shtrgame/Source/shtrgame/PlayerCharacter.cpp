@@ -34,17 +34,30 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// player controllers appear only upon begin play - not
+	// player/ai controllers appear only upon begin play - not
 	// in the constructor
 
 	// i want to remember this upcasted controller because
 	// otherwise i will have to upcast it many times
 	CustomPlayerController = Cast<AAnotherCharacterPlayerController>( GetController() );
+	CustomBotController = Cast<ACustomAIController>( GetController() );
 	
-	// listen to the "interact" signal
-	// from current custom player controller
 	if( CustomPlayerController ) {
+		// i want to do some things if this is a player,
+		// not ai
+		
+		// listen to the "interact" signal
+		// from current custom player controller
 		CustomPlayerController->CurrentGunClasChangedSignatureInstance.AddDynamic( this, &APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance );
+
+		}
+	
+	if( CustomBotController ) {
+		// i want to do some things if this is a ai,
+		// not player
+		
+		// nothing yet
+
 		}
 
 }
@@ -238,8 +251,6 @@ void APlayerCharacter::DrawCurrentGun() {
 	// in the blueprint editor
 	//GetMesh()->IgnoreActorWhenMoving( this->CurrentGun, true );
 	//GetMesh()->IgnoreActorWhenMoving( CurrentGun, true );
-
-	//AnotherCharacterController->ChooseCurrentGunWidget();
 
 }
 
@@ -440,11 +451,22 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 	
 	UE_LOG( LogTemp, Warning, TEXT("APlayerCharacter::TakeDamage") );
 
+	// apply the damage
+
 	StatsHP -= DamageAmount;
 
 	if( StatsHP<=0.0f ) {
 		//GameModeRef->PlateBroken();
 		Destroy();
+	}
+
+	// do some custom things
+	
+	if( CustomBotController ) {
+		// this character is controlled by ai
+
+		
+	
 	}
 
 	return DamageAmount;
