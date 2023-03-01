@@ -23,6 +23,8 @@ void ACustomAIController::BeginPlay() {
     if( GetBlackboardComponent() ) {
 
         GetBlackboardComponent()->SetValueAsVector( TEXT("StartLocation"), GetPawn()->GetActorLocation() );
+        
+        GetBlackboardComponent()->SetValueAsEnum( TEXT("SelfMoodWhim"), CurrentMoodWhim );
 
     }
 
