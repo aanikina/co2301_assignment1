@@ -8,6 +8,7 @@
 #include "CustomAIController.h"
 #include "GeneralGun.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "shtrgameGameModeBase.h"
 #include "PlayerCharacter.generated.h"
 
 /*
@@ -134,6 +135,9 @@ private:
 	// i want to easily see current gun object instance
 	UPROPERTY( VisibleAnywhere )
 		AGeneralGun *CurrentGun;
+
+	UPROPERTY()
+		AshtrgameGameModeBase *GameModeRef;
 
 	// ufunctions
 

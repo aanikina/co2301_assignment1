@@ -34,6 +34,11 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// remember game mode
+	GameModeRef = Cast<AshtrgameGameModeBase>(
+		UGameplayStatics::GetGameMode( GetWorld() )
+		);
+
 	// player/ai controllers appear only upon begin play - not
 	// in the constructor
 
@@ -484,8 +489,15 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 	StatsHP -= DamageAmount;
 
 	if( StatsHP<=0.0f ) {
-		//GameModeRef->PlateBroken();
+
+		if( CustomPlayerController ) {
+			GameModeRef->PlayerDead();
+		} else {
+			GameModeRef->KillScored();
+		}
+		
 		Destroy();
+
 	}
 
 	// do some custom things
