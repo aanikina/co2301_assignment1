@@ -1,33 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BehTreeS_HasLineOfSight.h"
 
-/*
-void UBehTreeS_HasLineOfSight::OnBecomeRelevant( UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory ) {
-
-    UE_LOG( LogTemp, Warning, TEXT("UBehTreeS_HasLineOfSight::OnBecomeRelevant") );
-    //CustomBotController = Cast<ACustomAIController>( GetController() );
-    
+#include "BehTreeS_CheckPlayerStatus.h"
 
 
-	if( CustomBotController ) {
-		// i want to do some things if this is a ai,
-		// not player
-		
-		// nothing yet
-
-		}
-
-}
-
-void UBehTreeS_HasLineOfSight::OnCeaseRelevant( UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory ) {
-
-    UE_LOG( LogTemp, Warning, TEXT("UBehTreeS_HasLineOfSight::OnCeaseRelevant") );
-
-}
-*/
-
-bool UBehTreeS_HasLineOfSight::PlayerIsInFrontOfMe( APawn *SelfPawn, APawn *LivePawn ) {
+bool UBehTreeS_CheckPlayerStatus::PlayerIsInFrontOfMe( APawn *SelfPawn, APawn *LivePawn ) {
 
     // This function detects that the player's pawn is in front
     // of my enemy pawn. The distance / actual visibility
@@ -64,14 +41,17 @@ bool UBehTreeS_HasLineOfSight::PlayerIsInFrontOfMe( APawn *SelfPawn, APawn *Live
 
 }
 
-void UBehTreeS_HasLineOfSight::TickNode( UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds ) {
+void UBehTreeS_CheckPlayerStatus::TickNode( UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds ) {
 
 	// help:
 	// https://github.com/danielpontello/unreal-course-shooter/blob/master/BTService_PlayerLocation.cpp
 
     Super::TickNode( OwnerComp, NodeMemory, DeltaSeconds );
-
-    //UE_LOG( LogTemp, Warning, TEXT("UBehTreeS_HasLineOfSight::TickNode") );
+    
+    //-------------------------+++
+    // Preparations.
+    
+    //UE_LOG( LogTemp, Warning, TEXT("UBehTreeS_CheckPlayerStatus::TickNode") );
 
     // i will use Live instead of Player to avoid accidental name
     // clashes
@@ -98,22 +78,12 @@ void UBehTreeS_HasLineOfSight::TickNode( UBehaviorTreeComponent& OwnerComp, uint
     if( !CustomSelfPawn ) { return; }
     if( !CustomLivePawn ) { return; }
 
-    // remember some things to blackboard
-    
-    if( CustomBotController->GetCurrentGunClass() ) {
-        SelfBlackboardComp->SetValueAsBool( TEXT("SelfHasAGun"), true );
-    } else {
-        SelfBlackboardComp->SetValueAsBool( TEXT("SelfHasAGun"), false );
-    }
-    if( CustomSelfPawn->GetCurrentGun() ) {
-        SelfBlackboardComp->SetValueAsBool( TEXT("SelfGunIsHidden"), false );
-    } else {
-        SelfBlackboardComp->SetValueAsBool( TEXT("SelfGunIsHidden"), true );
-    }
-
     // make sure i can see player unobstructed
     bool bIHaveLineOfSight = BotController->LineOfSightTo( LivePawn );
     bool bPlayerIsInFrontOfMe = PlayerIsInFrontOfMe( SelfPawn, LivePawn );
+    
+    //-------------------------+++
+    // Actual code.
 
     if( !( bIHaveLineOfSight && bPlayerIsInFrontOfMe ) ) {
         // oh no, something is blocking the player!

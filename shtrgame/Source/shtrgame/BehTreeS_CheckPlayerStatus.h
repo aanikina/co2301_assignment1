@@ -9,17 +9,15 @@
 #include "AnotherCharacterPlayerController.h"
 #include "PlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "BehTreeS_HasLineOfSight.generated.h"
+#include "BehTreeS_CheckPlayerStatus.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SHTRGAME_API UBehTreeS_HasLineOfSight : public UBTService_BlackboardBase
+class SHTRGAME_API UBehTreeS_CheckPlayerStatus : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()
-
-	// reuesd code from CO2301 lectures and labs
 
 public:
 
@@ -40,9 +38,6 @@ public:
 	*/
 
 private:
-
-	//UPROPERTY( VisibleAnywhere )
-	//	class ACustomAIController *CustomBotController;
 	
 	bool PlayerIsInFrontOfMe( APawn *SelfPawn, APawn *LivePawn );
 
