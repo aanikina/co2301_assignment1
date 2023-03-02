@@ -21,7 +21,7 @@ void ACustomAIController::BeginPlay() {
     
     // fill blackboard
     if( GetBlackboardComponent() ) {
-
+    
         GetBlackboardComponent()->SetValueAsVector( TEXT("StartLocation"), GetPawn()->GetActorLocation() );
 
     }
@@ -38,6 +38,20 @@ AActor* ACustomAIController::ChooseWaypoint() {
 void ACustomAIController::RandomPatrol() {
 
     MoveToActor( ChooseWaypoint() );
+
+}
+
+bool ACustomAIController::HasAGun() {
+
+    if( CurrentGunClass ) {
+
+        //GetBlackboardComponent()->SetValueAsBool( TEXT("SelfHasAGun"), true );
+        return true;
+
+        }
+
+    //GetBlackboardComponent()->SetValueAsBool( TEXT("SelfHasAGun"), false );
+    return false;
 
 }
 

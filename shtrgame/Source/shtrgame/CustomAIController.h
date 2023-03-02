@@ -39,9 +39,16 @@ private:
 	UPROPERTY( EditAnywhere )
 		UBehaviorTree* EnemyBehaviorTree;
 
-	// inviisble properties
+	// functions
+	
+	// help:
+	// https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/GameplayArchitecture/Functions/
+	UFUNCTION( BlueprintCallable )
+		AActor* ChooseWaypoint();
+	
+	UFUNCTION( BlueprintCallable )
+		bool HasAGun();
 
-	AActor* ChooseWaypoint();
 	void RandomPatrol();
 
 public:

@@ -62,6 +62,12 @@ void APlayerCharacter::BeginPlay()
 
 }
 
+float APlayerCharacter::GetStatsHP() {
+
+    return StatsHP;
+
+}
+
 void APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance( TSubclassOf<AGeneralGun> NewGunClass ) {
 
 	//UE_LOG( LogTemp, Warning, TEXT("APlayerCharacter::RespondToCurrentGunClasChangedSignatureInstance") );

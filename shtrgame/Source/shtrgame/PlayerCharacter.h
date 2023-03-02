@@ -145,5 +145,8 @@ private:
 	// catch custom signal from player controller
 	UFUNCTION()
 		void RespondToCurrentGunClasChangedSignatureInstance( TSubclassOf<AGeneralGun> NewGunClass );
+		
+	UFUNCTION( BlueprintCallable )
+		float GetStatsHP();
 
 };
