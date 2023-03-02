@@ -45,13 +45,6 @@ private:
 	UPROPERTY( EditAnywhere )
 		UBehaviorTree* EnemyBehaviorTree;
 
-	// functions
-	
-	// help:
-	// https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/GameplayArchitecture/Functions/
-	UFUNCTION( BlueprintCallable )
-		AActor* ChooseWaypoint();
-
 	void RandomPatrol();
 
 public:
@@ -59,6 +52,13 @@ public:
 	// functions
 
 	//void Tick( float DeltaTime ) override;
+
+	// functions
+	
+	// help:
+	// https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/GameplayArchitecture/Functions/
+	UFUNCTION( BlueprintCallable )
+		AActor* ChooseWaypoint();
 
 	void OnMoveCompleted(
 		FAIRequestID RequestID,

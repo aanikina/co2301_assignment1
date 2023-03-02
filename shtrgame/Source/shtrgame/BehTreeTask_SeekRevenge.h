@@ -25,7 +25,7 @@ private:
 	// https://github.com/danielpontello/unreal-course-shooter/blob/master/BTTask_ClearBlackboardValue.h
 	
 	AActor *GetClosestAttacker( ACustomAIController *CustomBotController, APlayerCharacter* CustomSelfPawn );
-	EBTNodeResult::Type RevengeAgainstBot( ACustomAIController *CustomAttackerBotController, APlayerCharacter* CustomAttackerPawn );
+	EBTNodeResult::Type RevengeAgainstBot( ACustomAIController *CustomSelfController, APlayerCharacter* CustomSelfPawn, ACustomAIController *CustomAttackerBotController, APlayerCharacter* CustomAttackerPawn );
 	EBTNodeResult::Type RevengeAgainstPlayer( AAnotherCharacterPlayerController *CustomAttackerLiveController, APlayerCharacter* CustomAttackerPawn );
 	EBTNodeResult::Type RevengeAgainstInanimate( AActor* AttackerActor );
 

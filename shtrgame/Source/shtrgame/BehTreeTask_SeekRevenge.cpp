@@ -40,10 +40,14 @@ AActor* UBehTreeTask_SeekRevenge::GetClosestAttacker( ACustomAIController *Custo
 }
 
 EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstBot(
+    ACustomAIController *CustomSelfController,
+    APlayerCharacter* CustomSelfPawn,
     ACustomAIController *CustomAttackerBotController,
     APlayerCharacter* CustomAttackerPawn ) {
 
-	UE_LOG( LogTemp, Warning, TEXT("UBehTreeTask_SeekRevenge::RevengeAgainstBot") );
+	//UE_LOG( LogTemp, Warning, TEXT("UBehTreeTask_SeekRevenge::RevengeAgainstBot") );
+
+    CustomSelfController->MoveToActor( CustomAttackerPawn, 5.0f );
     
     return EBTNodeResult::Succeeded;
 
@@ -136,12 +140,24 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::ExecuteTask( UBehaviorTreeComponen
     AAnotherCharacterPlayerController *CustomAttackerLiveController = Cast<AAnotherCharacterPlayerController>( CustomAttackerPawn->GetController() );
     
     if( CustomAttackerLiveController ) {
+        // even though i see CustomAttackerLiveController
+        // through the debugger,
+        // i always end up in the next branch
         return RevengeAgainstPlayer( CustomAttackerLiveController, CustomAttackerPawn );
     } else if( CustomAttackerBotController ) {
-        return RevengeAgainstBot( CustomAttackerBotController, CustomAttackerPawn );
+        // i end up here even with CustomAttackerLiveController
+        
+
+        SelfBlackboardComp->SetValueAsVector( TEXT("LastAttackerPosition"), CustomAttackerPawn->GetActorLocation() );
+        return RevengeAgainstBot( CustomBotController, CustomSelfPawn, CustomAttackerBotController, CustomAttackerPawn );
+        
+        //OwnerComp.GetAIOwner()->MoveToActor( CustomAttackerPawn, 5.0f );
+        //return EBTNodeResult::Succeeded;
+
     }
     
 	UE_LOG( LogTemp, Warning, TEXT("my closest attacker is controlled by something unknown, can't take revenge") );
 
 	return EBTNodeResult::Failed;
+
 }
