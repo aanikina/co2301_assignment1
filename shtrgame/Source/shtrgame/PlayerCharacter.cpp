@@ -237,10 +237,20 @@ void APlayerCharacter::DrawCurrentGun() {
 	}
 
 	// make sure i know what type of gun i have
-	if( !( CustomPlayerController->GetCurrentGunClass() ) ) {
-		// no gun
-		BrieflyShowEmptyHanded();
-		return;
+	if( CustomPlayerController ) {
+		// i'm a player
+		if( !( CustomPlayerController->GetCurrentGunClass() ) ) {
+			// no gun
+			BrieflyShowEmptyHanded();
+			return;
+		}
+	} else if( CustomBotController ) {
+		// i'm a bot
+		if( !( CustomBotController->GetCurrentGunClass() ) ) {
+			// no gun
+			BrieflyShowEmptyHanded();
+			return;
+		}
 	}
 
 	// help:

@@ -27,10 +27,18 @@ void UBehTreeS_HasLineOfSight::OnCeaseRelevant( UBehaviorTreeComponent &OwnerCom
 }
 */
 
-bool UBehTreeS_HasLineOfSight::ICanSeePlayer( APawn *SelfPawn, APawn *LivePawn ) {
+bool UBehTreeS_HasLineOfSight::PlayerIsInFrontOfMe( APawn *SelfPawn, APawn *LivePawn ) {
+
+    // This function detects that the player's pawn is in front
+    // of my enemy pawn. The distance / actual visibility
+    // of player pawn are still questionable.
+
+    // If I want to implement stealth mechanics, I will
+    // switch from APawn to my custom
+    // upcasted pawn.
 
 	// reused code from CO2301 lab
-	
+
     // vector from this enemy to player
     FVector BetweenThisEnemyAndPlayerVector 
         = LivePawn->GetActorLocation() - SelfPawn->GetActorLocation();
@@ -80,21 +88,57 @@ void UBehTreeS_HasLineOfSight::TickNode( UBehaviorTreeComponent& OwnerComp, uint
     APawn* LivePawn = UGameplayStatics::GetPlayerPawn( GetWorld(), 0 );
     APlayerCharacter* CustomLivePawn = Cast<APlayerCharacter>( LivePawn );
     
+    // make sure i have blackboard
+    UBlackboardComponent *SelfBlackboardComp = OwnerComp.GetBlackboardComponent();
+    if( !SelfBlackboardComp ) { return; }
+    
     // make sure my custom variables are used
     if( !CustomBotController ) { return; }
     if( !CustomLiveController ) { return; }
     if( !CustomSelfPawn ) { return; }
     if( !CustomLivePawn ) { return; }
+
+    // remember some things to blackboard
     
-    // make sure i have blackboard
-    UBlackboardComponent *SelfBlackboardComp = OwnerComp.GetBlackboardComponent();
-    if( !SelfBlackboardComp ) { return; }
+    if( CustomBotController->GetCurrentGunClass() ) {
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfHasAGun"), true );
+    } else {
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfHasAGun"), false );
+    }
+    if( CustomSelfPawn->GetCurrentGun() ) {
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfGunIsHidden"), false );
+    } else {
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfGunIsHidden"), true );
+    }
 
-    // make sure i see player
-    if( !ICanSeePlayer(SelfPawn,LivePawn) ) { return; }
+    // make sure i can see player unobstructed
+    bool bIHaveLineOfSight = BotController->LineOfSightTo( LivePawn );
+    bool bPlayerIsInFrontOfMe = PlayerIsInFrontOfMe( SelfPawn, LivePawn );
 
-    // remember things to blackboard
+    if( !( bIHaveLineOfSight && bPlayerIsInFrontOfMe ) ) {
+        // oh no, something is blocking the player!
+
+        // set appropriate blackboard
+        
+        // help:
+        // https://docs.unrealengine.com/5.1/en-US/BlueprintAPI/AI/Components/Blackboard/ClearValue/
+        
+        SelfBlackboardComp->ClearValue( TEXT("PlayerLocation") );
+        SelfBlackboardComp->ClearValue( TEXT("PlayerHasAGun") );
+
+        return;
+    }
+
+    // i can clearly see the player
 
     SelfBlackboardComp->SetValueAsVector( TEXT("PlayerLocation"), LivePawn->GetActorLocation() );
+
+    // saw player walking around with a gun
+    // if the gun is hidden this one should be false
+    if( CustomLivePawn->GetCurrentGun() ) {
+        SelfBlackboardComp->SetValueAsBool( TEXT("PlayerHasAGun"), true );
+    } else {
+        SelfBlackboardComp->SetValueAsBool( TEXT("PlayerHasAGun"), false );
+    }
 
 }

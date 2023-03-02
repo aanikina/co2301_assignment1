@@ -42,6 +42,10 @@ public:
 	UFUNCTION()
 		AGeneralGun *GetCurrentGun();
 
+	// i want others to access it
+	UFUNCTION()
+		void DrawCurrentGun();
+
 private:
 
 	// invisible events
@@ -132,9 +136,6 @@ private:
 		AGeneralGun *CurrentGun;
 
 	// ufunctions
-
-	UFUNCTION()
-		void DrawCurrentGun();
 
 	UFUNCTION()
 		void SetVisibleEmptyHanded( bool SetVisible );

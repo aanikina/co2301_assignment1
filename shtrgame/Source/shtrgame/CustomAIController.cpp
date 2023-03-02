@@ -6,6 +6,13 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "CustomAIController.h"
 
+ACustomAIController::ACustomAIController() {
+
+    // i don't need tick
+    PrimaryActorTick.bCanEverTick = false;
+
+}
+
 void ACustomAIController::BeginPlay() {
 
     Super::BeginPlay();
@@ -28,6 +35,24 @@ void ACustomAIController::BeginPlay() {
 
 }
 
+TSubclassOf<AGeneralGun> ACustomAIController::GetCurrentGunClass() {
+
+    return CurrentGunClass;
+
+}
+
+void ACustomAIController::SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunClass ) {
+
+    CurrentGunClass = NewGunClass;
+	
+    /*
+	// tell everyone
+	if( CurrentGunClasChangedSignatureInstance.IsBound() ) {
+		CurrentGunClasChangedSignatureInstance.Broadcast( NewGunClass );
+	}*/
+
+}
+
 AActor* ACustomAIController::ChooseWaypoint() {
 
     int iloc = FMath::RandRange( 0, Waypoints.Num()-1 );
@@ -41,20 +66,6 @@ void ACustomAIController::RandomPatrol() {
 
 }
 
-bool ACustomAIController::HasAGun() {
-
-    if( CurrentGunClass ) {
-
-        //GetBlackboardComponent()->SetValueAsBool( TEXT("SelfHasAGun"), true );
-        return true;
-
-        }
-
-    //GetBlackboardComponent()->SetValueAsBool( TEXT("SelfHasAGun"), false );
-    return false;
-
-}
-
 void ACustomAIController::OnMoveCompleted( FAIRequestID RequestID, const FPathFollowingResult &Result ) {
     
     Super::OnMoveCompleted( RequestID, Result );
@@ -63,31 +74,9 @@ void ACustomAIController::OnMoveCompleted( FAIRequestID RequestID, const FPathFo
 
 }
 
+/*
 void ACustomAIController::Tick( float DeltaTime ) {
 
     Super::Tick( DeltaTime );
-    
-    // necessary pawns
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn( GetWorld(), 0 );
-    APawn* ThisEnemyPawn = GetPawn();
-    
-    if( GetBlackboardComponent() ) {
-        // remember player location to blackboard
-        GetBlackboardComponent()->SetValueAsVector( TEXT("PlayerLocation"), PlayerPawn->GetActorLocation() );
-    }
-    
-    // vector from this enemy to player
-    FVector BetweenThisEnemyAndPlayerVector 
-        = PlayerPawn->GetActorLocation() - ThisEnemyPawn->GetActorLocation();
-    BetweenThisEnemyAndPlayerVector.Normalize();
-    
-    // where is this enemy facing
-    FVector ThisEnemyForwardVector = ThisEnemyPawn->GetActorForwardVector();
-    
-    // compute the dot product
-    float CosinusBetweenCurrentDirectionAndPlayer = FVector::DotProduct(
-        BetweenThisEnemyAndPlayerVector, ThisEnemyForwardVector
-    );
-    //UE_LOG( LogTemp, Warning, TEXT("dot product is: %f"), CosinusBetweenCurrentDirectionAndPlayer );
 
-}
+}*/

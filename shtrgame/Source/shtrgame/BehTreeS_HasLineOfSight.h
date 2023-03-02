@@ -43,8 +43,8 @@ private:
 
 	//UPROPERTY( VisibleAnywhere )
 	//	class ACustomAIController *CustomBotController;
-
-	bool ICanSeePlayer( APawn *SelfPawn, APawn *LivePawn );
+	
+	bool PlayerIsInFrontOfMe( APawn *SelfPawn, APawn *LivePawn );
 
 protected:
 

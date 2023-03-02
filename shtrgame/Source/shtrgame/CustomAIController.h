@@ -15,6 +15,10 @@ class SHTRGAME_API ACustomAIController : public AAIController
 {
 	GENERATED_BODY()
 
+public:
+
+	ACustomAIController();
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -45,9 +49,6 @@ private:
 	// https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/GameplayArchitecture/Functions/
 	UFUNCTION( BlueprintCallable )
 		AActor* ChooseWaypoint();
-	
-	UFUNCTION( BlueprintCallable )
-		bool HasAGun();
 
 	void RandomPatrol();
 
@@ -55,13 +56,17 @@ public:
 	
 	// functions
 
-	void Tick( float DeltaTime ) override;
+	//void Tick( float DeltaTime ) override;
 
 	void OnMoveCompleted(
 		FAIRequestID RequestID,
 		const FPathFollowingResult& Result
 	) override;
-
-	// other properties
+	
+	// allow others to access player's gun settings
+	UFUNCTION()
+		TSubclassOf<AGeneralGun> GetCurrentGunClass();
+	UFUNCTION()
+		void SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunClass );
 
 };
