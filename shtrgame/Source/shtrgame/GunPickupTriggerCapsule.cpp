@@ -48,7 +48,7 @@ void AGunPickupTriggerCapsule::BeginPlay()
 
 void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *OtherActor ) {
 
-	UE_LOG( LogTemp, Log, TEXT("AGunPickupTriggerCapsule::OnOverlapBegin") );
+	//UE_LOG( LogTemp, Log, TEXT("AGunPickupTriggerCapsule::OnOverlapBegin") );
 	
 	// make sure i collided with an actor that is being controlled
 	// by my custom player or ai
@@ -56,29 +56,35 @@ void AGunPickupTriggerCapsule::OnOverlapBegin( AActor *OverlappedActor, AActor *
 		return;
 	}
 	
-	SetVisibleInteractionPrompt( true );
-	bPlayerIsCloseEnoughToInteract = true;
-	
-	// listen to the "interact" signal
-	// from this player
 	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
 	if( CustomPlayerController ) {
+		// live player, not bot
+		
+		SetVisibleInteractionPrompt( true );
+		bPlayerIsCloseEnoughToInteract = true;
+		
+		// listen to the "interact" signal
+		// from this player
 		CustomPlayerController->InteractPressSignatureInstance.AddDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
+
 		}
 
 }
 
 void AGunPickupTriggerCapsule::OnOverlapEnd( AActor *OverlappedActor, AActor *OtherActor ) {
 	
-	SetVisibleInteractionPrompt( false );
-	bPlayerIsCloseEnoughToInteract = false;
-	
-	// stop listening to the "interact" signal
-	// from this player
-	// because i don't understand, how to check if already listening
 	AAnotherCharacterPlayerController *CustomPlayerController = Cast<AAnotherCharacterPlayerController>( OtherActor->GetInstigatorController() );
 	if( CustomPlayerController ) {
+		// live player, not bot
+	
+		SetVisibleInteractionPrompt( false );
+		bPlayerIsCloseEnoughToInteract = false;
+
+		// stop listening to the "interact" signal
+		// from this player
+		// because i don't understand how to check if already listening
 		CustomPlayerController->InteractPressSignatureInstance.RemoveDynamic( this, &AGunPickupTriggerCapsule::RespondToInteractSignatureInstancePress );
+
 		}
 
 }
