@@ -53,9 +53,21 @@ void ACustomAIController::SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunCla
 
 }
 
-void ACustomAIController::RemeberThatWasAttackedBy( APawn *AttackerPawn ) {
+void ACustomAIController::RemeberThatWasAttackedBy( AActor *AttackerActor ) {
 
-    UE_LOG( LogTemp, Warning, TEXT("ACustomAIController::RemeberThatWasAttackedBy %s"), AttackerPawn );
+    //UE_LOG( LogTemp, Warning, TEXT("ACustomAIController::RemeberThatWasAttackedBy %s"), AttackerPawn );
+
+    if( WasAttackedBy.Contains( AttackerActor ) ) {
+        // this attacker is known
+        // TODO
+        // raise vendetta meter
+
+        return;
+
+    }
+
+    // this attacker is new
+    WasAttackedBy.Add( AttackerActor );
 
 }
 
@@ -77,6 +89,21 @@ void ACustomAIController::OnMoveCompleted( FAIRequestID RequestID, const FPathFo
     Super::OnMoveCompleted( RequestID, Result );
 
     //RandomPatrol();
+
+}
+
+bool ACustomAIController::HasVendettas() {
+    
+    if( WasAttackedBy.Num()>0 ) {
+        return true;
+    }
+    return false;
+
+}
+
+TArray<AActor*> ACustomAIController::GetAttackers() {
+    
+    return WasAttackedBy;
 
 }
 

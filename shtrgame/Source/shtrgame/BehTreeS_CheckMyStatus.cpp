@@ -43,9 +43,16 @@ void UBehTreeS_CheckMyStatus::TickNode( UBehaviorTreeComponent& OwnerComp, uint8
 
     // is it hidden from player?
     if( CustomSelfPawn->GetCurrentGun() ) {
-        SelfBlackboardComp->SetValueAsBool( TEXT("SelfGunIsHidden"), false );
+        SelfBlackboardComp->ClearValue( TEXT("SelfGunIsHidden") ); // can't use false because selector becomes useless - value is set
     } else {
         SelfBlackboardComp->SetValueAsBool( TEXT("SelfGunIsHidden"), true );
+    }
+
+    // do i have any vendettas?
+    if( CustomBotController->HasVendettas() ) {
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfHasVendettas"), true );
+    } else {
+        SelfBlackboardComp->ClearValue( TEXT("SelfHasVendettas") ); // can't use false because selector becomes useless - value is set
     }
 
 }

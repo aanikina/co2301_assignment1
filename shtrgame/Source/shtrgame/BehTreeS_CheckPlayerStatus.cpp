@@ -93,22 +93,22 @@ void UBehTreeS_CheckPlayerStatus::TickNode( UBehaviorTreeComponent& OwnerComp, u
         // help:
         // https://docs.unrealengine.com/5.1/en-US/BlueprintAPI/AI/Components/Blackboard/ClearValue/
         
-        SelfBlackboardComp->ClearValue( TEXT("PlayerLocation") );
-        SelfBlackboardComp->ClearValue( TEXT("PlayerHasAGun") );
+        //SelfBlackboardComp->ClearValue( TEXT("LastPlayerLocation") );
+        //SelfBlackboardComp->ClearValue( TEXT("LastPlayerHasAGun") );
 
         return;
     }
 
     // i can clearly see the player
 
-    SelfBlackboardComp->SetValueAsVector( TEXT("PlayerLocation"), LivePawn->GetActorLocation() );
+    SelfBlackboardComp->SetValueAsVector( TEXT("LastPlayerLocation"), LivePawn->GetActorLocation() );
 
     // saw player walking around with a gun
     // if the gun is hidden this one should be false
     if( CustomLivePawn->GetCurrentGun() ) {
-        SelfBlackboardComp->SetValueAsBool( TEXT("PlayerHasAGun"), true );
+        SelfBlackboardComp->SetValueAsBool( TEXT("LastPlayerHasAGun"), true );
     } else {
-        SelfBlackboardComp->SetValueAsBool( TEXT("PlayerHasAGun"), false );
+        SelfBlackboardComp->SetValueAsBool( TEXT("LastPlayerHasAGun"), false );
     }
 
 }
