@@ -481,7 +481,7 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 	if( CustomBotController ) {
 		// this character is controlled by ai
 
-		
+		CustomBotController->RemeberThatWasAttackedBy( this );
 	
 	}
 

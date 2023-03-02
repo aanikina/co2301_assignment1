@@ -37,6 +37,8 @@ private:
 
 	UPROPERTY()
 		TArray<AActor*> Waypoints;
+	UPROPERTY()
+		TArray<APawn*> WasAttackedBy;
 
 	// editable properties
 	
@@ -68,5 +70,8 @@ public:
 		TSubclassOf<AGeneralGun> GetCurrentGunClass();
 	UFUNCTION()
 		void SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunClass );
+	
+	UFUNCTION()
+		void RemeberThatWasAttackedBy( APawn *AttackerPawn );
 
 };

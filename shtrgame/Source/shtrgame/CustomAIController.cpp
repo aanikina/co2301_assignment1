@@ -53,6 +53,12 @@ void ACustomAIController::SetCurrentGunClass( TSubclassOf<AGeneralGun> NewGunCla
 
 }
 
+void ACustomAIController::RemeberThatWasAttackedBy( APawn *AttackerPawn ) {
+
+    UE_LOG( LogTemp, Warning, TEXT("ACustomAIController::RemeberThatWasAttackedBy %s"), AttackerPawn );
+
+}
+
 AActor* ACustomAIController::ChooseWaypoint() {
 
     int iloc = FMath::RandRange( 0, Waypoints.Num()-1 );
