@@ -230,8 +230,15 @@ void APlayerCharacter::DrawCurrentGun() {
 	// make sure haven't drawn gun previously
 	if( CurrentGun ) {
 		// i want to hide my current gun away
+
 		CurrentGun->Destroy();
 		CurrentGun = nullptr;
+		
+		if( CustomPlayerController ) {
+			// i'm a player
+			CustomPlayerController->SetVisibleCrosshair( false );
+			}
+
 		return;
 
 	}
@@ -267,6 +274,11 @@ void APlayerCharacter::DrawCurrentGun() {
 	// in the blueprint editor
 	//GetMesh()->IgnoreActorWhenMoving( this->CurrentGun, true );
 	//GetMesh()->IgnoreActorWhenMoving( CurrentGun, true );
+	
+	if( CustomPlayerController ) {
+		// i'm a player
+		CustomPlayerController->SetVisibleCrosshair( true );
+	}
 
 }
 
@@ -304,7 +316,7 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	
     // boolean parameter forces lines to be persistent so the raycast is not erased in millisecond
     // last parameter is the width of the lines
-    DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
+    //DrawDebugLine( GetWorld(), StartLocation, EndLocation, FColor::Orange, true, -1, 0, 1.0f );
 
 	/*
 	// apperently this checks if somebody hit me, not if i hit somebody

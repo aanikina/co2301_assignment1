@@ -25,6 +25,10 @@ class SHTRGAME_API AAnotherCharacterPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+protected:
+
+	virtual void BeginPlay() override;
+
 private:
 	
 	void InteractPressEvent();
@@ -33,6 +37,13 @@ private:
 	// player will start either empty-handed or with this gun
 	UPROPERTY( EditAnywhere )
 		TSubclassOf<AGeneralGun> CurrentGunClass = nullptr;
+		
+	// reused code from CO2301 lab 9
+
+	UPROPERTY( EditAnywhere )
+	    TSubclassOf<UUserWidget> CrosshairWidgetClass;
+	UPROPERTY()
+	    UUserWidget *CrosshairWidget;
 
 public:
 		
@@ -47,5 +58,8 @@ public:
 	// this is a custom signal-slot
 	FInteractPressSignature InteractPressSignatureInstance;
 	FCurrentGunClasChangedSignature CurrentGunClasChangedSignatureInstance;
+
+	UFUNCTION()
+		void SetVisibleCrosshair( bool SetVisible );
 
 };

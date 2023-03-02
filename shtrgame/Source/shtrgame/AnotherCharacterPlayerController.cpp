@@ -13,9 +13,52 @@ void AAnotherCharacterPlayerController::SetupInputComponent() {
 
 }
 
+void AAnotherCharacterPlayerController::BeginPlay() {
+
+    Super::BeginPlay();
+	
+	// reused code from CO2301 lab 9
+	
+	// i want to create crosshair
+	// but don't show it yet
+	if( CrosshairWidgetClass ) {
+		CrosshairWidget = CreateWidget( this, CrosshairWidgetClass );
+	}
+
+}
+
 TSubclassOf<AGeneralGun> AAnotherCharacterPlayerController::GetCurrentGunClass() {
 
     return CurrentGunClass;
+
+}
+
+void AAnotherCharacterPlayerController::SetVisibleCrosshair( bool SetVisible ) {
+
+	// Shows and hides the interaction prompt.
+	
+	// make sure i have initialized the prompt
+	if( !CrosshairWidget ) {
+		// ??? i expect to create it in BeginPlay
+		return;
+	}
+
+	if( SetVisible ) {
+		// show interaction prompt
+
+		if( !( CrosshairWidget->IsInViewport() ) ) {
+			CrosshairWidget->AddToViewport();
+		}
+
+		return;
+	
+	}
+
+	// hide interaction prompt
+
+	if( CrosshairWidget->IsInViewport() ) {
+		CrosshairWidget->RemoveFromViewport();
+	}
 
 }
 
