@@ -57,7 +57,7 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstBot(
         // draw only if haven't drawn prevously
         CustomSelfPawn->DrawCurrentGun();
         }
-    CustomSelfController->MoveToActor( CustomAttackerPawn, 1.0f );
+    CustomSelfController->MoveToActor( CustomAttackerPawn, 15.0f );
     CustomSelfPawn->Shoot( CustomAttackerPawn );
     
     return EBTNodeResult::Succeeded;
@@ -76,7 +76,7 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstPlayer(
         // draw only if haven't drawn prevously
         CustomSelfPawn->DrawCurrentGun();
         }
-    CustomSelfController->MoveToActor( CustomAttackerPawn, 1.0f );
+    CustomSelfController->MoveToActor( CustomAttackerPawn, 15.0f );
     CustomSelfPawn->Shoot( CustomAttackerPawn );
     
     return EBTNodeResult::Succeeded;
