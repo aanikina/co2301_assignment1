@@ -345,9 +345,10 @@ void APlayerCharacter::FireTriggerPullEvent() {
 	// help:
 	// reused code from CO2301 lecture about raytracing
 	// http://jollymonsterstudio.com/2019/01/06/unreal-engine-c-fundamentals-linetracesinglebychannel-and-friends-drawdebugbox-drawdebugline-fhitresult-and-vrandcone/
+	// https://www.reddit.com/r/unrealengine/comments/k6zjtd/set_linetracesinglebychannel_to_ignore_my_ai/
 	
 	//FCollisionQueryParams CollisionParameters;
-	FCollisionQueryParams TraceParams( FName(TEXT("InteractTrace")), true, NULL );
+	FCollisionQueryParams TraceParams( FName(TEXT("InteractTrace")), true, this );
 
 	FHitResult RaycastHitResult;
 	bool bIsHit = GetWorld()->LineTraceSingleByChannel(
