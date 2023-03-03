@@ -496,6 +496,12 @@ void APlayerCharacter::TakeDamageAnimationTimerRanOut() {
 		GameModeRef->KillScored();
 	}
 
+	if( CurrentGun ) {
+		// otherwise gun hangs in the air
+		CurrentGun->Destroy();
+		CurrentGun = nullptr;
+	}
+
 	Destroy();
 
 }
