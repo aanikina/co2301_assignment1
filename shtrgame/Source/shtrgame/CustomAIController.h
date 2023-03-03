@@ -51,7 +51,7 @@ public:
 	
 	// functions
 
-	//void Tick( float DeltaTime ) override;
+	void Tick( float DeltaTime ) override;
 
 	// functions
 	

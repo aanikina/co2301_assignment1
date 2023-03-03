@@ -8,8 +8,11 @@
 
 ACustomAIController::ACustomAIController() {
 
-    // i don't need tick
-    PrimaryActorTick.bCanEverTick = false;
+    // i need tick if i want characters
+    // to rotate when they move
+    // help:
+    // https://forums.unrealengine.com/t/behavior-trees-rotate-to-face-bb-entry-and-moveto-can-never-work-together-reasonably/378431/6
+    PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -109,9 +112,8 @@ TArray<AActor*> ACustomAIController::GetAttackers() {
 
 }
 
-/*
 void ACustomAIController::Tick( float DeltaTime ) {
 
     Super::Tick( DeltaTime );
 
-}*/
+}
