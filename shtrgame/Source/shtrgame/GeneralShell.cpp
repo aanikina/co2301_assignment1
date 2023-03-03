@@ -36,6 +36,9 @@ void AGeneralShell::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// bind events
+	OnActorHit.AddDynamic( this, &AGeneralShell::OnHit );
+	
 }
 
 // Called every frame
@@ -47,34 +50,31 @@ void AGeneralShell::Tick(float DeltaTime)
 
 void AGeneralShell::OnHit( AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit ) {
 	
-	UE_LOG( LogTemp, Warning, TEXT("shell fell to the ground") );
+	//UE_LOG( LogTemp, Warning, TEXT("shell fell to the ground") );
 
 	// reused code from CO2301 lab 3
 
 	// NormalImpulse = velocity of the collision
 
-	//bool bHitSaucer;
+	//UE_LOG( LogTemp, Warning, TEXT("AGeneralShell::OnHit -- damaged actor %s"), OtherActor );
 
-	//bHitSaucer = OtherActor->GetClass()->IsChildOf( ASaucer::StaticClass() );
+	if( !OtherActor ) {
+		return;
+	}
 
-	/*
-	if( bHitSaucer ) {
+	// make sure i hit something controllable
+	if( !OtherActor->GetInstigatorController() ) {
+		return;
+		}
 
-		AActor* ProjectileOwner = GetOwner();
-		if( ProjectileOwner == NULL ) { return; }
-	
-		//UE_LOG( LogTemp, Warning, TEXT( "------- teabag OnHit") );
+	UGameplayStatics::ApplyDamage(
+		OtherActor,
+		BaseDamage,
+		OtherActor->GetInstigatorController(), // you hurt yourself
+		this, // actor that caused damage
+		UDamageType::StaticClass() // class that describes the damage that was done
+	);
 
-		UGameplayStatics::ApplyDamage(
-			OtherActor,
-			BaseDamage,
-			ProjectileOwner->GetInstigatorController(),
-			this, // actor that caused damage
-			UDamageType::StaticClass() // class that describes the damage that was done
-		);
-
-		Destroy();
-
-	}*/
+	Destroy();
 
 }

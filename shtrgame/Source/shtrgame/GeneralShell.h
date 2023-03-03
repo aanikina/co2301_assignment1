@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "GeneralShell.generated.h"
 
 UCLASS()
@@ -33,6 +34,9 @@ private:
 	UPROPERTY( VisibleAnywhere )
 		UProjectileMovementComponent* ProjectileMovementComp;
 		
+	// characters can trip on them
+	UPROPERTY( EditAnywhere )
+		float BaseDamage = 10.0f;
 	UPROPERTY( EditAnywhere )
 		float FallSpeed = 800.0f;
 	UPROPERTY( EditAnywhere )
