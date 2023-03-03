@@ -255,6 +255,9 @@ void APlayerCharacter::DrawCurrentGun() {
 			// no gun
 			BrieflyShowEmptyHanded();
 			return;
+		} else {
+			// yes gun
+			CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( CustomPlayerController->GetCurrentGunClass() );
 		}
 	} else if( CustomBotController ) {
 		// i'm a bot
@@ -262,6 +265,9 @@ void APlayerCharacter::DrawCurrentGun() {
 			// no gun
 			BrieflyShowEmptyHanded();
 			return;
+		} else {
+			// yes gun
+			CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( CustomBotController->GetCurrentGunClass() );
 		}
 	}
 
@@ -269,8 +275,6 @@ void APlayerCharacter::DrawCurrentGun() {
 	// https://forums.unrealengine.com/t/attach-actor-to-socket-via-c/8167
 	// https://forums.unrealengine.com/t/how-to-get-character-mesh-in-c-from-character-blueprint/325816/3
 	// reused code from example in CO2301 internship discord
-
-	CurrentGun = GetWorld()->SpawnActor<AGeneralGun>( CustomPlayerController->GetCurrentGunClass() );
 
 	CurrentGun->AttachToComponent( GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponRSocket") );
     CurrentGun->SetOwner( this );
@@ -506,7 +510,7 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 	// help:
 	// https://forums.unrealengine.com/t/how-to-setup-and-play-animation-strictly-using-c/131391/8
 	if( TakeDamageAnimation ) {
-		GetMesh()->SetAnimation( DeathAnimation );
+		GetMesh()->SetAnimation( TakeDamageAnimation );
 		GetMesh()->SetPlayRate( 1.0f );
 		GetMesh()->Play(true);
 	}
@@ -530,7 +534,7 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 			TakeDamageAnimationTimerHandle,
 			this, // which object runs the timer
 			&APlayerCharacter::TakeDamageAnimationTimerRanOut, // what to do when the timer runs out
-			2.0f, // timer duration
+			1.5f, // timer duration
 			false // loop the timer?
 		);
 		// i want to destroy self and
@@ -544,10 +548,40 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 	if( CustomBotController ) {
 		// this character is controlled by ai
 
-		CustomBotController->RemeberThatWasAttackedBy( this );
+		CustomBotController->RemeberThatWasAttackedBy( DamageCauser );
 	
 	}
 
 	return DamageAmount;
+
+}
+
+void APlayerCharacter::Shoot( AActor *TargetActor ) {
+
+	// Automatically performs a shot.
+	// Useful for bots.
+
+	if( CustomPlayerController ) {
+		UE_LOG( LogTemp, Warning, TEXT("APlayerCharacter::Shoot -- only bots should use this function, and you're a player, not a bot") );
+		return;
+	}
+
+	if( TargetActor ) {
+		// attempt to aim
+		// TODO
+		// custom aim accuracy
+
+		// help:
+		// https://forums.unrealengine.com/t/find-look-at-rotation-in-c/279907/3
+		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(
+			this->GetActorLocation(), // me
+			TargetActor->GetActorLocation() // target
+			);
+	
+	}
+
+	// without target i will shoot wherever i'm looking at
+	FireTriggerPullEvent();
+	FireTriggerReleaseEvent();
 
 }

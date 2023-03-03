@@ -26,7 +26,7 @@ private:
 	
 	AActor *GetClosestAttacker( ACustomAIController *CustomBotController, APlayerCharacter* CustomSelfPawn );
 	EBTNodeResult::Type RevengeAgainstBot( ACustomAIController *CustomSelfController, APlayerCharacter* CustomSelfPawn, ACustomAIController *CustomAttackerBotController, APlayerCharacter* CustomAttackerPawn );
-	EBTNodeResult::Type RevengeAgainstPlayer( AAnotherCharacterPlayerController *CustomAttackerLiveController, APlayerCharacter* CustomAttackerPawn );
+	EBTNodeResult::Type RevengeAgainstPlayer( ACustomAIController *CustomSelfController, APlayerCharacter* CustomSelfPawn, AAnotherCharacterPlayerController *CustomAttackerLiveController, APlayerCharacter* CustomAttackerPawn );
 	EBTNodeResult::Type RevengeAgainstInanimate( AActor* AttackerActor );
 
 	virtual EBTNodeResult::Type ExecuteTask(

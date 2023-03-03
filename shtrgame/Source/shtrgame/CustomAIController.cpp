@@ -87,6 +87,8 @@ void ACustomAIController::RandomPatrol() {
 void ACustomAIController::OnMoveCompleted( FAIRequestID RequestID, const FPathFollowingResult &Result ) {
     
     Super::OnMoveCompleted( RequestID, Result );
+    
+    GetBlackboardComponent()->ClearValue( TEXT("SelfMovingInProcess") );
 
     //RandomPatrol();
 

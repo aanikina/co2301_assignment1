@@ -46,18 +46,38 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstBot(
     APlayerCharacter* CustomAttackerPawn ) {
 
 	//UE_LOG( LogTemp, Warning, TEXT("UBehTreeTask_SeekRevenge::RevengeAgainstBot") );
+    
+    // help:
+    // https://forums.unrealengine.com/t/blueprint-getting-an-object-to-look-at-another-object/363332/3
+    //FVector Direction = FVector::ForwardVector;
+    //FRotator LookAtRotator = FRotationMatrix::MakeFromX(Direction).Rotator();
+    //CustomSelfPawn->SetActorRotation( LookAtRotator );
 
-    CustomSelfController->MoveToActor( CustomAttackerPawn, 5.0f );
+    if( !CustomSelfPawn->GetCurrentGun() ) {
+        // draw only if haven't drawn prevously
+        CustomSelfPawn->DrawCurrentGun();
+        }
+    CustomSelfController->MoveToActor( CustomAttackerPawn, 1.0f );
+    CustomSelfPawn->Shoot( CustomAttackerPawn );
     
     return EBTNodeResult::Succeeded;
 
 }
 
 EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstPlayer(
+    ACustomAIController *CustomSelfController,
+    APlayerCharacter* CustomSelfPawn,
     AAnotherCharacterPlayerController *CustomAttackerLiveController,
     APlayerCharacter* CustomAttackerPawn ) {
 
-	UE_LOG( LogTemp, Warning, TEXT("UBehTreeTask_SeekRevenge::RevengeAgainstPlayer") );
+	//UE_LOG( LogTemp, Warning, TEXT("UBehTreeTask_SeekRevenge::RevengeAgainstPlayer") );
+
+    if( !CustomSelfPawn->GetCurrentGun() ) {
+        // draw only if haven't drawn prevously
+        CustomSelfPawn->DrawCurrentGun();
+        }
+    CustomSelfController->MoveToActor( CustomAttackerPawn, 1.0f );
+    CustomSelfPawn->Shoot( CustomAttackerPawn );
     
     return EBTNodeResult::Succeeded;
 
@@ -140,19 +160,18 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::ExecuteTask( UBehaviorTreeComponen
     AAnotherCharacterPlayerController *CustomAttackerLiveController = Cast<AAnotherCharacterPlayerController>( CustomAttackerPawn->GetController() );
     
     if( CustomAttackerLiveController ) {
-        // even though i see CustomAttackerLiveController
-        // through the debugger,
-        // i always end up in the next branch
-        return RevengeAgainstPlayer( CustomAttackerLiveController, CustomAttackerPawn );
-    } else if( CustomAttackerBotController ) {
-        // i end up here even with CustomAttackerLiveController
-        
 
         SelfBlackboardComp->SetValueAsVector( TEXT("LastAttackerPosition"), CustomAttackerPawn->GetActorLocation() );
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfMovingInProcess"), true );
+
+        return RevengeAgainstPlayer( CustomBotController, CustomSelfPawn, CustomAttackerLiveController, CustomAttackerPawn );
+
+    } else if( CustomAttackerBotController ) {
+
+        SelfBlackboardComp->SetValueAsVector( TEXT("LastAttackerPosition"), CustomAttackerPawn->GetActorLocation() );
+        SelfBlackboardComp->SetValueAsBool( TEXT("SelfMovingInProcess"), true );
+    
         return RevengeAgainstBot( CustomBotController, CustomSelfPawn, CustomAttackerBotController, CustomAttackerPawn );
-        
-        //OwnerComp.GetAIOwner()->MoveToActor( CustomAttackerPawn, 5.0f );
-        //return EBTNodeResult::Succeeded;
 
     }
     

@@ -37,6 +37,8 @@ EBTNodeResult::Type UBehTreeTask_RandomPatrol::ExecuteTask( UBehaviorTreeCompone
     // Actual code.
 
     // reused code from CO2301 lab
+
+    SelfBlackboardComp->SetValueAsBool( TEXT("SelfMovingInProcess"), true );
     
     AActor* Waypoint = CustomBotController->ChooseWaypoint();
     CustomBotController->MoveToActor( Waypoint, 1.0f );

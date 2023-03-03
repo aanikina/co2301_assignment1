@@ -9,6 +9,7 @@
 #include "GeneralGun.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "shtrgameGameModeBase.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "PlayerCharacter.generated.h"
 
 /*
@@ -46,6 +47,8 @@ public:
 	// i want others to access it
 	UFUNCTION()
 		void DrawCurrentGun();
+	UFUNCTION()
+		void Shoot( AActor *TargetActor );
 
 private:
 
