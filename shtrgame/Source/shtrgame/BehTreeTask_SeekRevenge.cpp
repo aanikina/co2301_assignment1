@@ -84,6 +84,8 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstPlayer(
 }
 
 EBTNodeResult::Type UBehTreeTask_SeekRevenge::RevengeAgainstInanimate(
+    ACustomAIController *CustomSelfController,
+    APlayerCharacter* CustomSelfPawn,
     AActor* AttackerActor ) {
 
 	UE_LOG( LogTemp, Warning, TEXT("UBehTreeTask_SeekRevenge::RevengeAgainstInanimate") );
@@ -151,7 +153,7 @@ EBTNodeResult::Type UBehTreeTask_SeekRevenge::ExecuteTask( UBehaviorTreeComponen
 
     if( !CustomAttackerPawn ) {
         // i was attacked not by my custom character
-        return RevengeAgainstInanimate( ClosestAttacker );
+        return RevengeAgainstInanimate( CustomBotController, CustomSelfPawn, ClosestAttacker );
     }
 
     // i was attacked by my custom character, but who controls it?
