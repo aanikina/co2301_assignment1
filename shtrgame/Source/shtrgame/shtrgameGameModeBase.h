@@ -21,8 +21,10 @@ protected:
 
 private:
 
+	FName GameoverLevel;
+
 	UPROPERTY( EditAnywhere )
-		int HowManyThingsToKill = 1;
+		int HowManyThingsToKill = 2;
 
 	// reused code from CO2301 lab 4, 7
 
@@ -30,7 +32,7 @@ private:
 		void StartGame();
 		
 	UFUNCTION()
-		void GameOver( FName LevelName );
+		void GameOver();
 
 public:
 		

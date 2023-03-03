@@ -480,6 +480,21 @@ AGeneralGun *APlayerCharacter::GetCurrentGun() {
 
 }
 
+void APlayerCharacter::TakeDamageAnimationTimerRanOut() {
+
+	// this will allow to set this timer again
+	TakeDamageAnimationTimerHandle.Invalidate();
+	
+	if( CustomPlayerController ) {
+		GameModeRef->PlayerDead();
+	} else {
+		GameModeRef->KillScored();
+	}
+
+	Destroy();
+
+}
+
 float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &DamageEvent, AController *EventInstigator, AActor *DamageCauser ) {
 	
 	UE_LOG( LogTemp, Warning, TEXT("APlayerCharacter::TakeDamage") );
@@ -487,16 +502,40 @@ float APlayerCharacter::TakeDamage( float DamageAmount, const FDamageEvent &Dama
 	// apply the damage
 
 	StatsHP -= DamageAmount;
+	
+	// help:
+	// https://forums.unrealengine.com/t/how-to-setup-and-play-animation-strictly-using-c/131391/8
+	if( TakeDamageAnimation ) {
+		GetMesh()->SetAnimation( DeathAnimation );
+		GetMesh()->SetPlayRate( 1.0f );
+		GetMesh()->Play(true);
+	}
 
 	if( StatsHP<=0.0f ) {
 
-		if( CustomPlayerController ) {
-			GameModeRef->PlayerDead();
-		} else {
-			GameModeRef->KillScored();
+		// help:
+		// https://forums.unrealengine.com/t/how-to-setup-and-play-animation-strictly-using-c/131391/8
+		// https://forums.unrealengine.com/t/how-can-i-use-a-delay-or-a-sleep-in-c/286782/2
+		if( DeathAnimation ) {
+
+			GetMesh()->SetAnimation( DeathAnimation );
+			GetMesh()->SetPlayRate( 1.0f );
+			GetMesh()->Play(true);
+			//FPlatformProcess::Sleep( 2.0f ); // freezes everything
+
 		}
 		
-		Destroy();
+		// set new timer
+		GetWorld()->GetTimerManager().SetTimer(
+			TakeDamageAnimationTimerHandle,
+			this, // which object runs the timer
+			&APlayerCharacter::TakeDamageAnimationTimerRanOut, // what to do when the timer runs out
+			2.0f, // timer duration
+			false // loop the timer?
+		);
+		// i want to destroy self and
+		// change game mode only after timer runs out
+		//Destroy();
 
 	}
 

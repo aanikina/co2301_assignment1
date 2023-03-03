@@ -70,10 +70,13 @@ private:
 	
 	void FireCooldownTimerRanOut();
 	void DashCooldownTimerRanOut();
+	void TakeDamageAnimationTimerRanOut();
 
 	FTimerHandle FireCooldownTimerHandle;
 	FTimerHandle DashCooldownTimerHandle;
+	FTimerHandle TakeDamageAnimationTimerHandle;
 		
+
 	// reused code from CO2301 lab with saucers
 	
 	virtual float TakeDamage(
@@ -138,6 +141,11 @@ private:
 
 	UPROPERTY()
 		AshtrgameGameModeBase *GameModeRef;
+		
+	UPROPERTY( EditAnywhere )
+		UAnimationAsset *DeathAnimation;
+	UPROPERTY( EditAnywhere )
+		UAnimationAsset *TakeDamageAnimation;
 
 	// ufunctions
 

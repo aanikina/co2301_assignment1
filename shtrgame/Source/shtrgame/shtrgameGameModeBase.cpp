@@ -17,9 +17,9 @@ void AshtrgameGameModeBase::StartGame() {
 
 }
 		
-void AshtrgameGameModeBase::GameOver( FName LevelName ) {
+void AshtrgameGameModeBase::GameOver() {
 
-    UGameplayStatics::OpenLevel( GetWorld(), LevelName );
+    UGameplayStatics::OpenLevel( GetWorld(), GameoverLevel );
 
 }
 
@@ -28,14 +28,16 @@ void AshtrgameGameModeBase::KillScored() {
     HowManyThingsToKill -= 1;
 
     if( HowManyThingsToKill<=0 ) {
-        GameOver( "PlayerSurvivedMap" );
+		GameoverLevel = "PlayerSurvivedMap";
+        GameOver();
     }
 
 }
 
 void AshtrgameGameModeBase::PlayerDead() {
 
-    GameOver( "PlayerDeadMap" );
+	GameoverLevel = "PlayerDeadMap";
+    GameOver();
 
 }
 
