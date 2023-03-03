@@ -411,6 +411,15 @@ void APlayerCharacter::FireTriggerReleaseEvent() {
 
 void APlayerCharacter::DashPressEvent() {
 	//UE_LOG( LogTemp, Warning, TEXT("DashPressEvent") );
+
+	// help:
+	// https://forums.unrealengine.com/t/how-to-check-if-character-is-jumping/70391/3
+	if( GetMovementComponent()->IsFalling() ) {
+		// when i dash while in jump, i dash eternally
+		// in chosen direction
+		// i don't want to do this
+		return;
+	}
 	
 	if( DashCooldownTimerHandle.IsValid() ) {
 		// timer is still counting, not doing anything
